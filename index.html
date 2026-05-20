@@ -651,72 +651,294 @@ nav{
     <p>MEMORIES THAT LAST A LIFETIME</p>
 </section>
 
+<!-- ================= EVENTS SLIDER SECTION ================= -->
+
 <section class="section-title">
+
     <h2>Some Grand Celebrations We Host</h2>
+
     <div class="gold-divider"></div>
+
 </section>
 
-<div class="event-grid">
+<div class="slider-container">
 
-<a href="wedding.html" class="event-link">
-<div class="event-card">
-<img src="7.png" alt="Wedding">
-<h3>Weddings</h3>
-<p>From floral arrangements to gourmet catering, we make your dream wedding a majestic reality.</p>
+    <!-- LEFT BUTTON -->
+
+    <button class="slide-btn prev">&#10094;</button>
+
+    <!-- SLIDER -->
+
+    <div class="event-slider">
+
+        <!-- CARD 1 -->
+
+        <a href="wedding.html" class="slide-card">
+
+            <img src="7.png" alt="Wedding">
+
+            <div class="slide-content">
+
+                <h3>Weddings</h3>
+
+                <p>
+                Royal wedding celebrations with luxury arrangements.
+                </p>
+
+            </div>
+
+        </a>
+
+        <!-- CARD 2 -->
+
+        <a href="upnayan.html" class="slide-card">
+
+            <img src="8.png" alt="Upnayan">
+
+            <div class="slide-content">
+
+                <h3>Upnayan Sanskar</h3>
+
+                <p>
+                Traditional sacred ceremonies with elegance.
+                </p>
+
+            </div>
+
+        </a>
+
+        <!-- CARD 3 -->
+
+        <a href="Engagement.html" class="slide-card">
+
+            <img src="9.png" alt="Engagement">
+
+            <div class="slide-content">
+
+                <h3>Engagement</h3>
+
+                <p>
+                Celebrate love in a luxurious atmosphere.
+                </p>
+
+            </div>
+
+        </a>
+
+        <!-- CARD 4 -->
+
+        <a href="Reception.html" class="slide-card">
+
+            <img src="6.png" alt="Reception">
+
+            <div class="slide-content">
+
+                <h3>Reception</h3>
+
+                <p>
+                Elegant reception nights with premium hospitality.
+                </p>
+
+            </div>
+
+        </a>
+
+        <!-- CARD 5 -->
+
+        <a href="Birthday.html" class="slide-card">
+
+            <img src="4.png" alt="Birthday">
+
+            <div class="slide-content">
+
+                <h3>Birthday</h3>
+
+                <p>
+                Memorable birthday parties with joy and luxury.
+                </p>
+
+            </div>
+
+        </a>
+
+        <!-- CARD 6 -->
+
+        <a href="Mehndi.html" class="slide-card">
+
+            <img src="3.png" alt="Mehndi">
+
+            <div class="slide-content">
+
+                <h3>Mehndi & Sangeet</h3>
+
+                <p>
+                Musical nights and unforgettable celebrations.
+                </p>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- RIGHT BUTTON -->
+
+    <button class="slide-btn next">&#10095;</button>
+
 </div>
-</a>
 
-<a href="upnayan.html" class="event-link">
-<div class="event-card">
-<img src="8.png">
-<h3>Upnayan Sanskar</h3>
-<p>The Sacred Thread Ceremony Marking a Child’s Spiritual and Educational Initiation.</p>
-</div>
-</a>
+<!-- ================= CSS ================= -->
 
-<a href="Engagement.html" class="event-link">
-<div class="event-card">
-<img src="9.png">
-<h3>Engagement Ceremony</h3>
-<p>Where two people commit to marry, celebrating their love and future together.</p>
-</div>
-</a>
+<style>
 
-<!-- Reception -->
-<a href="Reception.html" class="event-link">
-<div class="event-card">
-<img src="6.png" alt="Reception">
-<h3>Reception Ceremony</h3>
-<p>
-Reception is a gathering held after a wedding where family and friends celebrate the couple.
-</p>
-</div>
-</a>
+/* ================= EVENT SLIDER ================= */
 
-<!-- Birthday -->
-<a href="Birthday.html" class="event-link">
-<div class="event-card">
-<img src="4.png" alt="Birthday">
-<h3>Birth Day</h3>
-<p>
-Celebrates the anniversary of a person’s birth with joy, wishes, and gifts.
-</p>
-</div>
-</a>
+.slider-container{
+    position:relative;
+    width:100%;
+    padding:20px 5%;
+}
 
-<!-- Mehndi & Sangeet -->
-<a href="Mehndi.html" class="event-link">
-<div class="event-card">
-<img src="3.png" alt="Mehandi">
-<h3>Mehandi & Sangeet</h3>
-<p>
-Spacious lawns and acoustics-ready halls for musical nights and cultural events.
-</p>
-</div>
-</a>
+.event-slider{
+    display:flex;
+    gap:20px;
 
-</div>
+    overflow-x:auto;
 
+    scroll-behavior:smooth;
+
+    scrollbar-width:none;
+}
+
+.event-slider::-webkit-scrollbar{
+    display:none;
+}
+
+/* CARD */
+
+.slide-card{
+    min-width:320px;
+    max-width:320px;
+
+    background:white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    text-decoration:none;
+
+    color:black;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+
+    transition:0.3s ease;
+
+    flex-shrink:0;
+}
+
+.slide-card:hover{
+    transform:translateY(-8px);
+}
+
+.slide-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.slide-content{
+    padding:20px;
+}
+
+.slide-content h3{
+    color:#002366;
+    margin-bottom:10px;
+    font-size:24px;
+}
+
+.slide-content p{
+    color:#666;
+    line-height:1.6;
+}
+
+/* BUTTONS */
+
+.slide-btn{
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:50px;
+    height:50px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.95);
+
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
+
+    cursor:pointer;
+
+    z-index:5;
+
+    font-size:24px;
+
+    transition:0.3s;
+}
+
+.slide-btn:hover{
+    transform:translateY(-50%) scale(1.08);
+}
+
+.prev{
+    left:15px;
+}
+
+.next{
+    right:15px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .slide-card{
+        min-width:260px;
+        max-width:260px;
+    }
+
+    .slide-btn{
+        display:none;
+    }
+
+}
+
+</style>
+
+<!-- ================= JS ================= -->
+
+<script>
+
+const slider = document.querySelector('.event-slider');
+
+document.querySelector('.next').onclick = () => {
+
+    slider.scrollLeft += 340;
+
+};
+
+document.querySelector('.prev').onclick = () => {
+
+    slider.scrollLeft -= 340;
+
+};
+
+</script>
 <!-- ================= ROOMS SECTION ================= -->
 
 <section class="rooms-section">
