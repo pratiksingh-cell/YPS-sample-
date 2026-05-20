@@ -545,87 +545,45 @@ nav{
     transform:translateY(-3px);
 }
 
-/* ================= MOBILE ================= */
+/* ================= APP STYLE MOBILE NAV ================= */
+
+.mobile-nav{
+    display:none;
+}
 
 @media (max-width:768px){
 
-    /* Prevent horizontal scroll */
-    body{
-        overflow-x:hidden;
+    /* Show bottom nav like app */
+    .mobile-nav{
+        display:flex;
+        position:fixed;
+        bottom:0;
+        left:0;
+        width:100%;
+        background:white;
+        box-shadow:0 -5px 20px rgba(0,0,0,0.1);
+        justify-content:space-around;
+        padding:10px 0;
+        z-index:9999;
     }
 
-    /* Fix nav overflow ONLY */
-    nav{
-        flex-wrap:wrap;
-        gap:10px;
-    }
-
-    .nav-links{
-        flex-wrap:wrap;
-        justify-content:flex-start;
-        gap:10px;
-    }
-
-    .nav-links a{
-        font-size:12px;
-    }
-
-    .btn-book{
-        padding:10px 12px;
-        font-size:12px;
-    }
-
-    /* Hero ONLY text scaling */
-    .hero h1{
-        font-size:2.2rem;
-        line-height:1.2;
-    }
-
-    .hero p{
-        font-size:0.9rem;
-    }
-
-    /* Booking bar prevents overflow only */
-    .booking-bar{
-        width:92%;
-        padding:20px;
-    }
-
-    .input-group input,
-    .input-group select{
+    .mobile-nav a{
+        text-decoration:none;
+        color:var(--royal-blue);
         font-size:14px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:3px;
+        font-weight:600;
     }
 
-    /* Event cards spacing fix only */
-    .event-grid{
-        padding:0 5% 60px;
-        gap:20px;
+    .mobile-nav a span{
+        font-size:10px;
     }
 
-    /* Rooms slight scale fix only */
-    .room-card{
-        width:300px;
-    }
-
-    .rooms-title{
-        font-size:34px;
-    }
-
-    /* About section text fix only */
-    .about-content h2{
-        font-size:2rem;
-        line-height:1.2;
-    }
-
-    /* Location map fix only */
-    .map-container{
-        height:320px;
-        min-width:100%;
-    }
-
-    /* Footer safe wrapping */
-    footer div{
-        flex:1 1 100%;
+    body{
+        padding-bottom:70px;
     }
 }
 </style>
