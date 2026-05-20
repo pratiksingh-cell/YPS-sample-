@@ -37,17 +37,22 @@ img{
 /* ================= NAVIGATION ================= */
 
 nav{
-    background:var(--white);
+    background:rgba(255,255,255,0.75);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:15px 8%;
+
+    padding:12px 6%;
     position:sticky;
     top:0;
     z-index:1000;
-    box-shadow:0 2px 15px rgba(0,0,0,0.1);
-}
 
+    box-shadow:0 2px 20px rgba(0,0,0,0.08);
+}
+    
 .logo{
     font-family:'Playfair Display',serif;
     font-size:28px;
@@ -582,6 +587,43 @@ nav{
         min-width:100%;
         height:350px;
     }
+}
+
+@media (max-width:768px){
+
+    nav{
+        flex-wrap:wrap;
+        gap:10px;
+        padding:10px 5%;
+    }
+
+    .nav-links{
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:12px;
+    }
+
+    .nav-links a{
+        font-size:12px;
+    }
+
+    .btn-book{
+        width:100%;
+        text-align:center;
+        padding:10px;
+    }
+
+    /* prevent hero overlap */
+    .hero{
+        margin-top:0;
+        padding-top:10px;
+    }
+
+}
+
+    nav{
+    border-bottom:1px solid rgba(0,0,0,0.05);
 }
 </style>
 </head>
