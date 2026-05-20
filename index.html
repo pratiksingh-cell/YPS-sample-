@@ -549,38 +549,83 @@ nav{
 
 @media (max-width:768px){
 
-    .hero h1{
-        font-size:2.5rem;
+    /* Prevent horizontal scroll */
+    body{
+        overflow-x:hidden;
     }
 
-    .booking-bar{
-        grid-template-columns:1fr;
-        margin-top:-20px;
-        width:90%;
-    }
-
-    .nav{
-        flex-direction:column;
+    /* Fix nav overflow ONLY */
+    nav{
+        flex-wrap:wrap;
+        gap:10px;
     }
 
     .nav-links{
         flex-wrap:wrap;
-        justify-content:center;
-        gap:12px;
+        justify-content:flex-start;
+        gap:10px;
+    }
+
+    .nav-links a{
+        font-size:12px;
+    }
+
+    .btn-book{
+        padding:10px 12px;
+        font-size:12px;
+    }
+
+    /* Hero ONLY text scaling */
+    .hero h1{
+        font-size:2.2rem;
+        line-height:1.2;
+    }
+
+    .hero p{
+        font-size:0.9rem;
+    }
+
+    /* Booking bar prevents overflow only */
+    .booking-bar{
+        width:92%;
+        padding:20px;
+    }
+
+    .input-group input,
+    .input-group select{
+        font-size:14px;
+    }
+
+    /* Event cards spacing fix only */
+    .event-grid{
+        padding:0 5% 60px;
+        gap:20px;
+    }
+
+    /* Rooms slight scale fix only */
+    .room-card{
+        width:300px;
     }
 
     .rooms-title{
         font-size:34px;
     }
 
+    /* About section text fix only */
     .about-content h2{
-        font-size:2.2rem;
+        font-size:2rem;
+        line-height:1.2;
     }
 
+    /* Location map fix only */
     .map-container{
-        width:100%;
+        height:320px;
         min-width:100%;
-        height:350px;
+    }
+
+    /* Footer safe wrapping */
+    footer div{
+        flex:1 1 100%;
     }
 }
 </style>
