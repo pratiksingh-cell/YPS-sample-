@@ -651,7 +651,7 @@ nav{
     <p>MEMORIES THAT LAST A LIFETIME</p>
 </section>
 
-<!-- ================= EVENTS SLIDER SECTION ================= -->
+<!-- ================= PREMIUM SINGLE CARD SLIDER ================= -->
 
 <section class="section-title">
 
@@ -661,129 +661,101 @@ nav{
 
 </section>
 
-<div class="slider-container">
+<div class="premium-slider">
 
     <!-- LEFT BUTTON -->
 
-    <button class="slide-btn prev">&#10094;</button>
+    <button class="premium-btn prev">&#10094;</button>
 
-    <!-- SLIDER -->
+    <!-- SLIDER TRACK -->
 
-    <div class="event-slider">
+    <div class="premium-track">
 
         <!-- CARD 1 -->
 
-        <a href="wedding.html" class="slide-card">
+        <div class="premium-card active">
 
             <img src="7.png" alt="Wedding">
 
-            <div class="slide-content">
+            <div class="premium-content">
 
-                <h3>Weddings</h3>
+                <h3>Royal Weddings</h3>
 
                 <p>
-                Royal wedding celebrations with luxury arrangements.
+                Experience majestic wedding celebrations with luxury decor and unforgettable memories.
                 </p>
+
+                <a href="wedding.html">Explore More</a>
 
             </div>
 
-        </a>
+        </div>
 
         <!-- CARD 2 -->
 
-        <a href="upnayan.html" class="slide-card">
+        <div class="premium-card">
 
             <img src="8.png" alt="Upnayan">
 
-            <div class="slide-content">
+            <div class="premium-content">
 
                 <h3>Upnayan Sanskar</h3>
 
                 <p>
-                Traditional sacred ceremonies with elegance.
+                Traditional spiritual ceremonies crafted with elegance and perfection.
                 </p>
+
+                <a href="upnayan.html">Explore More</a>
 
             </div>
 
-        </a>
+        </div>
 
         <!-- CARD 3 -->
 
-        <a href="Engagement.html" class="slide-card">
+        <div class="premium-card">
 
             <img src="9.png" alt="Engagement">
 
-            <div class="slide-content">
+            <div class="premium-content">
 
-                <h3>Engagement</h3>
+                <h3>Engagement Ceremony</h3>
 
                 <p>
-                Celebrate love in a luxurious atmosphere.
+                Celebrate love and togetherness in a premium luxurious atmosphere.
                 </p>
+
+                <a href="Engagement.html">Explore More</a>
 
             </div>
 
-        </a>
+        </div>
 
         <!-- CARD 4 -->
 
-        <a href="Reception.html" class="slide-card">
+        <div class="premium-card">
 
             <img src="6.png" alt="Reception">
 
-            <div class="slide-content">
+            <div class="premium-content">
 
-                <h3>Reception</h3>
+                <h3>Reception Nights</h3>
 
                 <p>
-                Elegant reception nights with premium hospitality.
+                Elegant receptions with royal hospitality and unforgettable celebrations.
                 </p>
+
+                <a href="Reception.html">Explore More</a>
 
             </div>
 
-        </a>
-
-        <!-- CARD 5 -->
-
-        <a href="Birthday.html" class="slide-card">
-
-            <img src="4.png" alt="Birthday">
-
-            <div class="slide-content">
-
-                <h3>Birthday</h3>
-
-                <p>
-                Memorable birthday parties with joy and luxury.
-                </p>
-
-            </div>
-
-        </a>
-
-        <!-- CARD 6 -->
-
-        <a href="Mehndi.html" class="slide-card">
-
-            <img src="3.png" alt="Mehndi">
-
-            <div class="slide-content">
-
-                <h3>Mehndi & Sangeet</h3>
-
-                <p>
-                Musical nights and unforgettable celebrations.
-                </p>
-
-            </div>
-
-        </a>
+        </div>
 
     </div>
 
     <!-- RIGHT BUTTON -->
 
-    <button class="slide-btn next">&#10095;</button>
+    <button class="premium-btn next">&#10095;</button>
 
 </div>
 
@@ -791,129 +763,174 @@ nav{
 
 <style>
 
-/* ================= EVENT SLIDER ================= */
+/* MAIN */
 
-.slider-container{
+.premium-slider{
     position:relative;
+
     width:100%;
-    padding:20px 5%;
+
+    max-width:1000px;
+
+    margin:auto;
+
+    overflow:hidden;
+
+    padding:30px 0;
 }
 
-.event-slider{
+/* TRACK */
+
+.premium-track{
     display:flex;
-    gap:20px;
 
-    overflow-x:auto;
-
-    scroll-behavior:smooth;
-
-    scrollbar-width:none;
-}
-
-.event-slider::-webkit-scrollbar{
-    display:none;
+    transition:transform 0.5s ease;
 }
 
 /* CARD */
 
-.slide-card{
-    min-width:320px;
-    max-width:320px;
+.premium-card{
+    min-width:100%;
 
     background:white;
 
-    border-radius:20px;
+    border-radius:25px;
 
     overflow:hidden;
 
-    text-decoration:none;
+    box-shadow:0 20px 50px rgba(0,0,0,0.15);
 
-    color:black;
-
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-
-    transition:0.3s ease;
-
-    flex-shrink:0;
+    position:relative;
 }
 
-.slide-card:hover{
-    transform:translateY(-8px);
-}
+/* IMAGE */
 
-.slide-card img{
+.premium-card img{
     width:100%;
-    height:220px;
+
+    height:500px;
+
     object-fit:cover;
 }
 
-.slide-content{
-    padding:20px;
+/* CONTENT */
+
+.premium-content{
+    position:absolute;
+
+    bottom:0;
+
+    width:100%;
+
+    padding:40px;
+
+    background:linear-gradient(
+        transparent,
+        rgba(0,0,0,0.85)
+    );
+
+    color:white;
 }
 
-.slide-content h3{
-    color:#002366;
-    margin-bottom:10px;
-    font-size:24px;
+.premium-content h3{
+    font-size:42px;
+
+    margin-bottom:15px;
+
+    font-family:'Playfair Display',serif;
 }
 
-.slide-content p{
-    color:#666;
-    line-height:1.6;
+.premium-content p{
+    max-width:600px;
+
+    line-height:1.7;
+
+    margin-bottom:20px;
+}
+
+.premium-content a{
+    display:inline-block;
+
+    padding:12px 24px;
+
+    background:#d4af37;
+
+    color:black;
+
+    border-radius:30px;
+
+    text-decoration:none;
+
+    font-weight:bold;
 }
 
 /* BUTTONS */
 
-.slide-btn{
+.premium-btn{
     position:absolute;
 
     top:50%;
 
     transform:translateY(-50%);
 
-    width:50px;
-    height:50px;
+    width:60px;
+
+    height:60px;
 
     border:none;
 
     border-radius:50%;
 
-    background:rgba(255,255,255,0.95);
+    background:rgba(255,255,255,0.9);
 
     box-shadow:0 5px 20px rgba(0,0,0,0.15);
+
+    font-size:28px;
 
     cursor:pointer;
 
     z-index:5;
 
-    font-size:24px;
-
     transition:0.3s;
 }
 
-.slide-btn:hover{
+.premium-btn:hover{
     transform:translateY(-50%) scale(1.08);
 }
 
 .prev{
-    left:15px;
+    left:20px;
 }
 
 .next{
-    right:15px;
+    right:20px;
 }
 
 /* MOBILE */
 
 @media(max-width:768px){
 
-    .slide-card{
-        min-width:260px;
-        max-width:260px;
+    .premium-card img{
+        height:350px;
     }
 
-    .slide-btn{
-        display:none;
+    .premium-content{
+        padding:25px;
+    }
+
+    .premium-content h3{
+        font-size:28px;
+    }
+
+    .premium-content p{
+        font-size:14px;
+    }
+
+    .premium-btn{
+        width:45px;
+        height:45px;
+
+        font-size:20px;
     }
 
 }
@@ -924,19 +941,92 @@ nav{
 
 <script>
 
-const slider = document.querySelector('.event-slider');
+const track = document.querySelector('.premium-track');
 
-document.querySelector('.next').onclick = () => {
+const cards = document.querySelectorAll('.premium-card');
 
-    slider.scrollLeft += 340;
+const nextBtn = document.querySelector('.next');
 
-};
+const prevBtn = document.querySelector('.prev');
 
-document.querySelector('.prev').onclick = () => {
+let index = 0;
 
-    slider.scrollLeft -= 340;
+function updateSlider(){
 
-};
+    track.style.transform =
+    `translateX(-${index * 100}%)`;
+
+}
+
+nextBtn.addEventListener('click', ()=>{
+
+    index++;
+
+    if(index >= cards.length){
+
+        index = 0;
+
+    }
+
+    updateSlider();
+
+});
+
+prevBtn.addEventListener('click', ()=>{
+
+    index--;
+
+    if(index < 0){
+
+        index = cards.length - 1;
+
+    }
+
+    updateSlider();
+
+});
+
+/* MOBILE SWIPE */
+
+let startX = 0;
+
+track.addEventListener('touchstart',(e)=>{
+
+    startX = e.touches[0].clientX;
+
+});
+
+track.addEventListener('touchend',(e)=>{
+
+    let endX = e.changedTouches[0].clientX;
+
+    if(startX - endX > 50){
+
+        index++;
+
+        if(index >= cards.length){
+
+            index = 0;
+
+        }
+
+    }
+
+    if(endX - startX > 50){
+
+        index--;
+
+        if(index < 0){
+
+            index = cards.length - 1;
+
+        }
+
+    }
+
+    updateSlider();
+
+});
 
 </script>
 <!-- ================= ROOMS SECTION ================= -->
