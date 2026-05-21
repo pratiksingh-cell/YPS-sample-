@@ -1027,7 +1027,19 @@ track.addEventListener('touchend',(e)=>{
     updateSlider();
 
 });
+setInterval(()=>{
 
+    index++;
+
+    if(index >= cards.length){
+
+        index = 0;
+
+    }
+
+    updateSlider();
+
+},4000);
 </script>
 <!-- ================= ROOMS SECTION ================= -->
 
