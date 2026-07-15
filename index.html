@@ -1533,6 +1533,26 @@ style="color:#9ca3af; text-decoration:none;">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
     const app = initializeApp(firebaseConfig);
+       import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+       const app = initializeApp(firebaseConfig);
+       const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+       async function googleLogin() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+
+        alert("Welcome " + result.user.displayName);
+
+        window.location.href = "book now.html";
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
 </script>
     
     <!-- Login Popup -->
@@ -1543,7 +1563,7 @@ style="color:#9ca3af; text-decoration:none;">
         <h2>Welcome to YPS Resort</h2>
         <p>Please sign in to continue your booking.</p>
 
-        <button class="google-btn" id="googleSignIn">
+        <button class="google-btn" onclick="googleLogin()">
     Continue with Google
 </button>
 
