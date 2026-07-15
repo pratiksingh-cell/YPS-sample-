@@ -1628,6 +1628,7 @@ style="color:#9ca3af; text-decoration:none;">
 
 </footer>
 
+i am pasting the <script type="module"> make the changes 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
@@ -1658,7 +1659,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
-   window.currentUser = null;
+
 window.addEventListener("DOMContentLoaded", () => {
 
     // ---------------- Google Login ----------------
@@ -1671,23 +1672,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                const result = await signInWithPopup(auth, provider);
+                await signInWithPopup(auth, provider);
 
-// Save user to Firestore
-await setDoc(
-    doc(db, "Users", result.user.uid),
-    {
-        uid: result.user.uid,
-        name: result.user.displayName,
-        email: result.user.email,
-        photo: result.user.photoURL,
-        createdAt: serverTimestamp(),
-        lastLogin: serverTimestamp()
-    },
-    { merge: true }
-);
-
-closeLoginModal();
+                closeLoginModal();
 window.location.href = "book now.html";
 
             } catch (error) {
@@ -1711,8 +1698,7 @@ window.location.href = "book now.html";
     const profileDropdown = document.getElementById("profileDropdown");
 
     onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    window.currentUser = user;
+        currentUser = user;
 
         if (!profileContainer) return;
 
@@ -1772,8 +1758,29 @@ window.location.href = "book now.html";
     }
 
 });
+    const bookNowBtn = document.getElementById("bookNowBtn");
 
+if (bookNowBtn) {
+
+    bookNowBtn.addEventListener("click", () => {
+
+        if (currentUser) {
+
+            // Already logged in
+            window.location.href = "book now.html";
+
+        } else {
+
+            // Not logged in
+            openLoginModal();
+
+        }
+
+    });
+
+}
 </script>
+
 
     <div id="loginModal" class="login-modal">
 
