@@ -1631,20 +1631,21 @@ style="color:#9ca3af; text-decoration:none;">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
-  authDomain: "yps-resort-sample.firebaseapp.com",
-  projectId: "yps-resort-sample",
-  storageBucket: "yps-resort-sample.firebasestorage.app",
-  messagingSenderId: "102739599449",
-  appId: "1:102739599449:web:96ddb83d95282cd8ec1148",
-  measurementId: "G-ZYL0XVPZ30"
+    apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
+    authDomain: "yps-resort-sample.firebaseapp.com",
+    projectId: "yps-resort-sample",
+    storageBucket: "yps-resort-sample.firebasestorage.app",
+    messagingSenderId: "102739599449",
+    appId: "1:102739599449:web:96ddb83d95282cd8ec1148",
+    measurementId: "G-ZYL0XVPZ30"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1653,93 +1654,98 @@ const provider = new GoogleAuthProvider();
 
 window.addEventListener("DOMContentLoaded", () => {
 
+    // ---------------- Google Login ----------------
+
     const googleBtn = document.getElementById("googleSignIn");
 
-    if (!googleBtn) {
-        console.error("googleSignIn button not found");
-        return;
+    if (googleBtn) {
+
+        googleBtn.addEventListener("click", async () => {
+
+            try {
+
+                await signInWithPopup(auth, provider);
+
+                window.location.href = "book now.html";
+
+            } catch (error) {
+
+                if (error.code === "auth/popup-closed-by-user") {
+                    return;
+                }
+
+                console.error(error);
+                alert(error.message);
+
+            }
+
+        });
+
     }
 
-    googleBtn.addEventListener("click", async () => {
+    // ---------------- User Profile ----------------
 
-        try {
+    const profileContainer = document.getElementById("profileContainer");
+    const profileDropdown = document.getElementById("profileDropdown");
 
-            const result = await signInWithPopup(auth, provider);
+    onAuthStateChanged(auth, (user) => {
 
-            window.location.href = "book now.html";
+        if (!profileContainer) return;
 
-        } catch (error) {
+        if (user) {
 
-    if (error.code === "auth/popup-closed-by-user") {
-        // User closed the Google popup, so do nothing.
-        return;
-    }
+            profileContainer.style.display = "block";
 
-    console.error(error);
-    alert(error.message);
+            const userPhoto = document.getElementById("userPhoto");
+            const userPhotoLarge = document.getElementById("userPhotoLarge");
+            const userName = document.getElementById("userName");
+            const userEmail = document.getElementById("userEmail");
 
-}
+            if (userPhoto) userPhoto.src = user.photoURL;
+            if (userPhotoLarge) userPhotoLarge.src = user.photoURL;
+            if (userName) userName.textContent = user.displayName;
+            if (userEmail) userEmail.textContent = user.email;
+
+        } else {
+
+            profileContainer.style.display = "none";
 
         }
 
     });
 
-});
-    onAuthStateChanged(auth, (user) => {
+    // ---------------- Dropdown ----------------
 
-    if (user) {
+    if (profileContainer && profileDropdown) {
 
-        document.getElementById("bookBtn").innerHTML =
-            "👋 Welcome, " + user.displayName;
+        profileContainer.addEventListener("click", () => {
 
-    }
+            profileDropdown.style.display =
+                profileDropdown.style.display === "block"
+                    ? "none"
+                    : "block";
 
-});
-    // Check login status
-onAuthStateChanged(auth, (user) => {
-
-    const profileContainer = document.getElementById("profileContainer");
-
-    if (user) {
-
-        profileContainer.style.display = "block";
-
-        document.getElementById("userPhoto").src = user.photoURL;
-        document.getElementById("userPhotoLarge").src = user.photoURL;
-
-        document.getElementById("userName").textContent = user.displayName;
-        document.getElementById("userEmail").textContent = user.email;
-
-    } else {
-
-        profileContainer.style.display = "none";
+        });
 
     }
 
-});
-    const profileContainer = document.getElementById("profileContainer");
-const profileDropdown = document.getElementById("profileDropdown");
+    // ---------------- Logout ----------------
 
-profileContainer.addEventListener("click", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    if (profileDropdown.style.display === "block") {
+    if (logoutBtn) {
 
-        profileDropdown.style.display = "none";
+        logoutBtn.addEventListener("click", async (e) => {
 
-    } else {
+            e.preventDefault();
 
-        profileDropdown.style.display = "block";
+            await signOut(auth);
+
+            location.reload();
+
+        });
 
     }
-
-});
-    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
-
-    e.preventDefault();
-
-    await signOut(auth);
-
-    location.reload();
 
 });
 </script>
