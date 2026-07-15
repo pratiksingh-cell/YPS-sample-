@@ -1671,6 +1671,9 @@ window.addEventListener("DOMContentLoaded", () => {
     if (googleBtn) {
         googleBtn.addEventListener("click", async () => {
             try {
+                // Set the flag right before the popup opens
+                sessionStorage.setItem("justLoggedIn", "true");
+
                 const result = await signInWithPopup(auth, provider);
                 currentUser = result.user;
 
@@ -1688,10 +1691,11 @@ window.addEventListener("DOMContentLoaded", () => {
                     { merge: true }
                 );
 
-                // Close modal (onAuthStateChanged below will handle the actual redirect)
                 closeLoginModal();
 
             } catch (error) {
+                // If login fails or is cancelled, clear the flag
+                sessionStorage.removeItem("justLoggedIn");
                 if (error.code === "auth/popup-closed-by-user") {
                     return;
                 }
@@ -1701,22 +1705,25 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---------------- User Profile & Redirect ----------------
+    // ---------------- User Profile & Conditional Redirect ----------------
     const profileContainer = document.getElementById("profileContainer");
     const profileDropdown = document.getElementById("profileDropdown");
 
     onAuthStateChanged(auth, (user) => {
-    currentUser = user;
+        currentUser = user;
 
-    if (user) {
-        closeLoginModal();
+        if (user) {
+            closeLoginModal();
 
-        // REMOVE OR COMMENT OUT THIS LINE:
-        // window.location.href = "book now.html"; 
+            // Check if they JUST logged in
+            if (sessionStorage.getItem("justLoggedIn") === "true") {
+                sessionStorage.removeItem("justLoggedIn"); // Clear flag
+                window.location.replace("book now.html"); // Redirect instantly
+            }
 
-        if (profileContainer) {
-            profileContainer.style.display = "block";
-            const userPhoto = document.getElementById("userPhoto");
+            if (profileContainer) {
+                profileContainer.style.display = "block";
+                const userPhoto = document.getElementById("userPhoto");
                 const userPhotoLarge = document.getElementById("userPhotoLarge");
                 const userName = document.getElementById("userName");
                 const userEmail = document.getElementById("userEmail");
@@ -1726,13 +1733,13 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (userName) userName.textContent = user.displayName;
                 if (userEmail) userEmail.textContent = user.email;
             }
-    } else {
-        if (profileContainer) {
-            profileContainer.style.display = "none";
+        } else {
+            if (profileContainer) {
+                profileContainer.style.display = "none";
+            }
         }
-    }
-});
-    
+    });
+
     // ---------------- Dropdown ----------------
     if (profileContainer && profileDropdown) {
         profileContainer.addEventListener("click", () => {
@@ -1748,6 +1755,9 @@ window.addEventListener("DOMContentLoaded", () => {
         logoutBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             await signOut(auth);
+            
+            // Show the logout alert (No alerts on login!)
+            alert("You have successfully logged out.");
             location.reload();
         });
     }
