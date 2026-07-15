@@ -300,6 +300,26 @@ onAuthStateChanged(auth, (user) => {
     }
 
 });
+    const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async (e) => {
+
+        e.preventDefault();
+
+        try {
+            await signOut(auth);
+
+            closeLoginModal?.();
+
+            window.location.replace("index.html");
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    });
+}
 </script>
 
 </body>
