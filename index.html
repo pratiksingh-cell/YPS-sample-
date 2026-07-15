@@ -1660,14 +1660,10 @@ const auth = getAuth(app);
 // ---------------- Google Provider Setup ----------------
 const provider = new GoogleAuthProvider();
 
-// Check if this device has completed a login before
 const hasLoggedInBefore = localStorage.getItem("hasLoggedInBefore");
-
 if (!hasLoggedInBefore) {
-    // 1st time: Force Google to show the account chooser
     provider.setCustomParameters({ prompt: 'select_account' });
 } else {
-    // 2nd time onwards: Do NOT set select_account so Google auto-selects their active account
     provider.setCustomParameters({});
 }
 
@@ -1687,10 +1683,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 const result = await signInWithPopup(auth, provider);
                 currentUser = result.user;
 
-                // Mark that they successfully logged in at least once
                 localStorage.setItem("hasLoggedInBefore", "true");
 
-                // Save user details to Firestore
                 await setDoc(
                     doc(db, "Users", result.user.uid),
                     {
@@ -1727,9 +1721,10 @@ window.addEventListener("DOMContentLoaded", () => {
         if (user) {
             closeLoginModal();
 
+            // REDIRECT FIXED: Changed back to .href so index.html stays in history
             if (sessionStorage.getItem("justLoggedIn") === "true") {
                 sessionStorage.removeItem("justLoggedIn");
-                window.location.replace("book now.html");
+                window.location.href = "book now.html"; 
             }
 
             if (profileContainer) {
@@ -1786,7 +1781,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 </script>
-
 <div id="loginModal" class="login-modal">
     <div class="login-box">
         <span class="close-btn" onclick="closeLoginModal()">&times;</span>
