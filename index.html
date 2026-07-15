@@ -703,27 +703,126 @@ nav{
 .guest-btn{
     background:#f1f1f1;
 }
+    /* ===== User Profile ===== */
+
+.profile-container{
+    position:relative;
+    display:none;
+    margin-left:20px;
+    cursor:pointer;
+}
+
+.profile-photo{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:3px solid #d4af37;
+    object-fit:cover;
+}
+
+.profile-dropdown{
+    display:none;
+    position:absolute;
+    right:0;
+    top:55px;
+    width:280px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    overflow:hidden;
+    z-index:9999;
+}
+
+.profile-header{
+    padding:20px;
+    text-align:center;
+}
+
+.profile-photo-large{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    margin-bottom:10px;
+    border:3px solid #d4af37;
+}
+
+.profile-header h3{
+    margin:5px 0;
+    color:#002366;
+}
+
+.profile-header p{
+    color:#666;
+    font-size:14px;
+}
+
+.profile-dropdown a{
+    display:block;
+    padding:15px 20px;
+    color:#002366;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.profile-dropdown a:hover{
+    background:#f4f7f9;
+}
 </style>
 </head>
 
 <body>
 
 <nav>
-    <nav>
+
     <div class="logo-container">
         <img src="logo.png" alt="YPS Logo" class="logo-img">
         <div class="logo">YPS RESORT</div>
     </div>
-    </nav>
 
     <div class="nav-links">
+
         <a href="#">Home</a>
         <a href="gallery.html">Gallery</a>
         <a href="contact us.html">Contact Us</a>
+
         <button class="btn-book" onclick="openLoginModal()">
-    Book Now
-</button>
+            Book Now
+        </button>
+
+        <!-- User Profile -->
+        <div class="profile-container" id="profileContainer" style="display:none;">
+
+            <img id="userPhoto"
+                 class="profile-photo"
+                 src=""
+                 alt="Profile">
+
+            <div class="profile-dropdown" id="profileDropdown">
+
+                <div class="profile-header">
+                    <img id="userPhotoLarge"
+                         class="profile-photo-large"
+                         src=""
+                         alt="Profile">
+
+                    <h3 id="userName"></h3>
+                    <p id="userEmail"></p>
+                </div>
+
+                <hr>
+
+                <a href="my-bookings.html">📅 My Bookings</a>
+
+                <a href="#">⚙️ Profile</a>
+
+                <a href="#" id="logoutBtn">🚪 Sign Out</a>
+
+            </div>
+
+        </div>
+
     </div>
+
 </nav>
 
 <section class="hero">
@@ -1538,7 +1637,6 @@ import {
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
   authDomain: "yps-resort-sample.firebaseapp.com",
@@ -1595,6 +1693,53 @@ window.addEventListener("DOMContentLoaded", () => {
             "👋 Welcome, " + user.displayName;
 
     }
+
+});
+    // Check login status
+onAuthStateChanged(auth, (user) => {
+
+    const profileContainer = document.getElementById("profileContainer");
+
+    if (user) {
+
+        profileContainer.style.display = "block";
+
+        document.getElementById("userPhoto").src = user.photoURL;
+        document.getElementById("userPhotoLarge").src = user.photoURL;
+
+        document.getElementById("userName").textContent = user.displayName;
+        document.getElementById("userEmail").textContent = user.email;
+
+    } else {
+
+        profileContainer.style.display = "none";
+
+    }
+
+});
+    const profileContainer = document.getElementById("profileContainer");
+const profileDropdown = document.getElementById("profileDropdown");
+
+profileContainer.addEventListener("click", () => {
+
+    if (profileDropdown.style.display === "block") {
+
+        profileDropdown.style.display = "none";
+
+    } else {
+
+        profileDropdown.style.display = "block";
+
+    }
+
+});
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+
+    e.preventDefault();
+
+    await signOut(auth);
+
+    location.reload();
 
 });
 </script>
