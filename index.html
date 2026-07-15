@@ -767,6 +767,77 @@ nav{
 .profile-dropdown a:hover{
     background:#f4f7f9;
 }
+
+    /* --- Base Styles for Desktop (Make sure container is relative) --- */
+#profileContainer {
+    position: relative;
+    cursor: pointer;
+}
+
+#profileDropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #ffffff;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    z-index: 1000;
+    min-width: 200px;
+    padding: 10px;
+}
+
+/* JavaScript toggles this class instead of hardcoded display rules */
+#profileDropdown.active {
+    display: block !important;
+}
+
+/* --- Mobile Specific Adaptations (Aspect Ratio Fix) --- */
+@media (max-width: 768px) {
+    #profileContainer {
+        position: static; /* Allows the dropdown to align with the screen layout */
+    }
+
+    #profileDropdown {
+        position: fixed; /* Fixes to viewport so it doesn't break overflow layouts */
+        top: 60px; /* Adjust based on your header's total height */
+        left: 5%;
+        right: 5%;
+        width: 90%; /* Spans gracefully across mobile viewports */
+        min-width: unset;
+        box-sizing: border-box;
+        border-radius: 12px;
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Make touch targets large and clear for mobile users */
+    #profileDropdown button, 
+    #profileDropdown a {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 16px; /* Prevents auto-zooming behaviors on mobile forms */
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    /* Style up the user photo inside mobile dropdown if needed */
+    #userPhotoLarge {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-bottom: 8px;
+    }
+    
+    /* Center text values cleanly on portrait device rotations */
+    #userName, #userEmail {
+        word-wrap: break-word;
+        margin-bottom: 4px;
+    }
+}
 </style>
 </head>
 
@@ -775,7 +846,7 @@ nav{
 <nav>
 
     <div class="logo-container">
-        <img src="logo.png" alt="YPS Logo" class="logo-img">
+        <img src="image/logo.png" alt="YPS Logo" class="logo-img">
         <div class="logo">YPS RESORT</div>
     </div>
 
@@ -854,7 +925,7 @@ nav{
 
         <div class="premium-card active">
 
-            <img src="7.png" alt="Wedding">
+            <img src="image/7.png" alt="Wedding">
 
             <div class="premium-content">
 
@@ -874,7 +945,7 @@ nav{
 
         <div class="premium-card">
 
-            <img src="8.png" alt="Upnayan">
+            <img src="image/8.png" alt="Upnayan">
 
             <div class="premium-content">
 
@@ -894,7 +965,7 @@ nav{
 
         <div class="premium-card">
 
-            <img src="9.png" alt="Engagement">
+            <img src="image/9.png" alt="Engagement">
 
             <div class="premium-content">
 
@@ -914,7 +985,7 @@ nav{
 
         <div class="premium-card">
 
-            <img src="6.png" alt="Reception">
+            <img src="image/6.png" alt="Reception">
 
             <div class="premium-content">
 
@@ -934,7 +1005,7 @@ nav{
 
        <div class="premium-card">
 
-            <img src="4.png" alt="Reception">
+            <img src="image/4.png" alt="Reception">
 
             <div class="premium-content">
 
@@ -954,7 +1025,7 @@ nav{
 
          <div class="premium-card">
 
-            <img src="3.png" alt="Reception">
+            <img src="image/3.png" alt="Reception">
 
             <div class="premium-content">
 
@@ -1273,7 +1344,7 @@ setInterval(()=>{
 <!-- ROOM 1 -->
 <div class="room-card">
 
-<img src="1.png" class="room-image">
+<img src="image/1.png" class="room-image">
 
 <div class="room-content">
 
@@ -1291,7 +1362,7 @@ Elegant interiors with premium comfort and modern luxury.
 <!-- ROOM 2 -->
 <div class="room-card">
 
-<img src="2.png" class="room-image">
+<img src="image/2.png" class="room-image">
 
 <div class="room-content">
 
@@ -1319,7 +1390,7 @@ Perfect family space with stylish interiors and comfort.
 <!-- IMAGE -->
 <div class="about-image">
 
-<img src="5.png" alt="YPS Resort">
+<img src="image/5.png" alt="YPS Resort">
 
 </div>
 
@@ -1657,9 +1728,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ---------------- Google Provider Setup ----------------
 const provider = new GoogleAuthProvider();
-
 const hasLoggedInBefore = localStorage.getItem("hasLoggedInBefore");
 if (!hasLoggedInBefore) {
     provider.setCustomParameters({ prompt: 'select_account' });
@@ -1679,10 +1748,8 @@ window.addEventListener("DOMContentLoaded", () => {
         googleBtn.addEventListener("click", async () => {
             try {
                 sessionStorage.setItem("justLoggedIn", "true");
-
                 const result = await signInWithPopup(auth, provider);
                 currentUser = result.user;
-
                 localStorage.setItem("hasLoggedInBefore", "true");
 
                 await setDoc(
@@ -1699,12 +1766,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 );
 
                 closeLoginModal();
-
             } catch (error) {
                 sessionStorage.removeItem("justLoggedIn");
-                if (error.code === "auth/popup-closed-by-user") {
-                    return;
-                }
+                if (error.code === "auth/popup-closed-by-user") return;
                 console.error(error);
                 alert(error.message);
             }
@@ -1721,7 +1785,6 @@ window.addEventListener("DOMContentLoaded", () => {
         if (user) {
             closeLoginModal();
 
-            // REDIRECT FIXED: Changed back to .href so index.html stays in history
             if (sessionStorage.getItem("justLoggedIn") === "true") {
                 sessionStorage.removeItem("justLoggedIn");
                 window.location.href = "book now.html"; 
@@ -1740,17 +1803,22 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (userEmail) userEmail.textContent = user.email;
             }
         } else {
-            if (profileContainer) {
-                profileContainer.style.display = "none";
-            }
+            if (profileContainer) profileContainer.style.display = "none";
         }
     });
 
-    // ---------------- Dropdown ----------------
+    // ---------------- Mobile-Friendly Dropdown ----------------
     if (profileContainer && profileDropdown) {
-        profileContainer.addEventListener("click", () => {
-            profileDropdown.style.display =
-                profileDropdown.style.display === "block" ? "none" : "block";
+        profileContainer.addEventListener("click", (e) => {
+            e.stopPropagation(); // Prevents immediate closing on touch
+            profileDropdown.classList.toggle("active");
+        });
+
+        // Auto-close dropdown when clicking anywhere else on the mobile screen
+        document.addEventListener("click", (e) => {
+            if (!profileContainer.contains(e.target)) {
+                profileDropdown.classList.remove("active");
+            }
         });
     }
 
@@ -1761,7 +1829,6 @@ window.addEventListener("DOMContentLoaded", () => {
         logoutBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             await signOut(auth);
-            
             alert("You have successfully logged out.");
             location.reload();
         });
@@ -1769,7 +1836,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // ---------------- Booking Button ----------------
     const bookNowBtn = document.getElementById("bookNowBtn");
-
     if (bookNowBtn) {
         bookNowBtn.addEventListener("click", () => {
             if (currentUser) {
