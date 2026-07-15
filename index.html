@@ -1762,30 +1762,21 @@ if (bookNowBtn) {
 }
 </script>
 
-    <div id="loginModal" class="login-modal">
-
+<div id="loginModal" class="login-modal">
     <div class="login-box">
-
         <span class="close-btn" onclick="closeLoginModal()">&times;</span>
-
         <h2>Welcome to YPS Resort</h2>
-
         <p>Sign in to continue your booking.</p>
-
         <button class="google-btn" id="googleSignIn">
             Continue with Google
         </button>
-
-        <button class="guest-btn"
-            onclick="window.location.href='book now.html'">
+        <button class="guest-btn" onclick="window.location.href='book now.html'">
             Continue as Guest
         </button>
-
     </div>
-
 </div>
-    
-    <script>
+
+<script>
 function openLoginModal(){
     document.getElementById("loginModal").style.display="flex";
 }
