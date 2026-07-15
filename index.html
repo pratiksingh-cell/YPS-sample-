@@ -1637,11 +1637,11 @@ import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
+import {
+    getFirestore,
+    doc,
+    setDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1658,57 +1658,46 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
-    let currentUser = null;
+let currentUser = null;
 
 window.addEventListener("DOMContentLoaded", () => {
 
     // ---------------- Google Login ----------------
-
     const googleBtn = document.getElementById("googleSignIn");
 
     if (googleBtn) {
-
         googleBtn.addEventListener("click", async () => {
-
             try {
-
                 const result = await signInWithPopup(auth, provider);
+                currentUser = result.user;
 
-currentUser = result.user;
+                await setDoc(
+                    doc(db, "Users", result.user.uid),
+                    {
+                        uid: result.user.uid,
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        photo: result.user.photoURL,
+                        createdAt: serverTimestamp(),
+                        lastLogin: serverTimestamp()
+                    },
+                    { merge: true }
+                );
 
-await setDoc(
-    doc(db, "Users", result.user.uid),
-    {
-        uid: result.user.uid,
-        name: result.user.displayName,
-        email: result.user.email,
-        photo: result.user.photoURL,
-        createdAt: serverTimestamp(),
-        lastLogin: serverTimestamp()
-    },
-    { merge: true }
-);
-
-closeLoginModal();
-window.location.href = "book now.html";
+                closeLoginModal();
+                window.location.href = "book now.html";
 
             } catch (error) {
-
                 if (error.code === "auth/popup-closed-by-user") {
                     return;
                 }
-
                 console.error(error);
                 alert(error.message);
-
             }
-
         });
-
     }
 
     // ---------------- User Profile ----------------
-
     const profileContainer = document.getElementById("profileContainer");
     const profileDropdown = document.getElementById("profileDropdown");
 
@@ -1718,7 +1707,6 @@ window.location.href = "book now.html";
         if (!profileContainer) return;
 
         if (user) {
-
             profileContainer.style.display = "block";
 
             const userPhoto = document.getElementById("userPhoto");
@@ -1732,72 +1720,47 @@ window.location.href = "book now.html";
             if (userEmail) userEmail.textContent = user.email;
 
         } else {
-
             profileContainer.style.display = "none";
-
         }
-
     });
 
     // ---------------- Dropdown ----------------
-
     if (profileContainer && profileDropdown) {
-
         profileContainer.addEventListener("click", () => {
-
             profileDropdown.style.display =
                 profileDropdown.style.display === "block"
                     ? "none"
                     : "block";
-
         });
-
     }
 
     // ---------------- Logout ----------------
-
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (logoutBtn) {
-
         logoutBtn.addEventListener("click", async (e) => {
-
             e.preventDefault();
-
             await signOut(auth);
-
             location.reload();
-
         });
-
     }
-
 });
-    const bookNowBtn = document.getElementById("bookNowBtn");
+
+// ---------------- Booking Redirect ----------------
+const bookNowBtn = document.getElementById("bookNowBtn");
 
 if (bookNowBtn) {
-
     bookNowBtn.addEventListener("click", () => {
-
         const user = auth.currentUser;
 
         if (user) {
-
             window.location.href = "book now.html";
-
         } else {
-
             openLoginModal();
-
         }
-
     });
-
-}
-
 }
 </script>
-
 
     <div id="loginModal" class="login-modal">
 
