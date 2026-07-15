@@ -1529,98 +1529,45 @@ style="color:#9ca3af; text-decoration:none;">
 
 </footer>
 
-   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
-    const app = initializeApp(firebaseConfig);
-       import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-       const app = initializeApp(firebaseConfig);
-       const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-       async function googleLogin() {
-    try {
-        const result = await signInWithPopup(auth, provider);
-
-        alert("Welcome " + result.user.displayName);
-
-        window.location.href = "book now.html";
-
-    } catch (error) {
-        alert(error.message);
-    }
-}
-       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-       const app = initializeApp(firebaseConfig);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
+  authDomain: "yps-resort-sample.firebaseapp.com",
+  projectId: "yps-resort-sample",
+  storageBucket: "yps-resort-sample.firebasestorage.app",
+  messagingSenderId: "102739599449",
+  appId: "1:102739599449:web:96ddb83d95282cd8ec1148",
+  measurementId: "G-ZYL0XVPZ30"
+};
+
+const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-
 const provider = new GoogleAuthProvider();
 
-       document.getElementById("googleSignIn").addEventListener("click", async () => {
+const googleBtn = document.getElementById("googleSignIn");
 
-    try {
+googleBtn.addEventListener("click", async () => {
+  try {
 
-        const result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
 
-        alert("Welcome " + result.user.displayName);
+    alert("Welcome " + result.user.displayName);
 
-        window.location.href = "book now.html";
+    window.location.href = "book now.html";
 
-    }
-
-    catch(error){
-
-        alert(error.message);
-
-    }
-
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+  }
 });
 </script>
-    
-    <!-- Login Popup -->
-<div id="loginModal" class="login-modal">
-    <div class="login-box">
-        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
-
-        <h2>Welcome to YPS Resort</h2>
-        <p>Please sign in to continue your booking.</p>
-
-       <button class="google-btn" id="googleSignIn">
-    Continue with Google
-</button>
-
-        <button class="guest-btn" onclick="window.location.href='book now.html'">
-            Continue as Guest
-        </button>
-    </div>
-</div>
-
-    <script>
-    function openLoginModal(){
-    document.getElementById("loginModal").style.display="flex";
-}
-
-function closeLoginModal(){
-    document.getElementById("loginModal").style.display="none";
-}
-
-window.onclick=function(event){
-    const modal=document.getElementById("loginModal");
-
-    if(event.target==modal){
-        modal.style.display="none";
-    }
-}
-    </script>
 </body>
 </html>
