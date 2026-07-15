@@ -1658,6 +1658,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
+    let currentUser = null;
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -1771,27 +1772,7 @@ window.location.href = "book now.html";
     }
 
 });
-    const bookNowBtn = document.getElementById("bookNowBtn");
 
-if (bookNowBtn) {
-
-    bookNowBtn.addEventListener("click", () => {
-
-        if (currentUser) {
-
-            // Already logged in
-            window.location.href = "book now.html";
-
-        } else {
-
-            // Not logged in
-            openLoginModal();
-
-        }
-
-    });
-
-}
 </script>
 
     <div id="loginModal" class="login-modal">
