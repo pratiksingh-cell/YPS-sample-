@@ -1553,6 +1553,38 @@ const provider = new GoogleAuthProvider();
         alert(error.message);
     }
 }
+       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+       const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
+
+       document.getElementById("googleSignIn").addEventListener("click", async () => {
+
+    try {
+
+        const result = await signInWithPopup(auth, provider);
+
+        alert("Welcome " + result.user.displayName);
+
+        window.location.href = "book now.html";
+
+    }
+
+    catch(error){
+
+        alert(error.message);
+
+    }
+
+});
 </script>
     
     <!-- Login Popup -->
@@ -1563,7 +1595,7 @@ const provider = new GoogleAuthProvider();
         <h2>Welcome to YPS Resort</h2>
         <p>Please sign in to continue your booking.</p>
 
-        <button class="google-btn" onclick="googleLogin()">
+       <button class="google-btn" id="googleSignIn">
     Continue with Google
 </button>
 
