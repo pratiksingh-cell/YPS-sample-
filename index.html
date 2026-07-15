@@ -1706,17 +1706,17 @@ window.addEventListener("DOMContentLoaded", () => {
     const profileDropdown = document.getElementById("profileDropdown");
 
     onAuthStateChanged(auth, (user) => {
-        currentUser = user;
+    currentUser = user;
 
-        if (user) {
-            closeLoginModal();
+    if (user) {
+        closeLoginModal();
 
-            // REDIRECT: If they just logged in, redirect them to the booking page immediately
-            window.location.href = "book now.html";
+        // REMOVE OR COMMENT OUT THIS LINE:
+        // window.location.href = "book now.html"; 
 
-            if (profileContainer) {
-                profileContainer.style.display = "block";
-                const userPhoto = document.getElementById("userPhoto");
+        if (profileContainer) {
+            profileContainer.style.display = "block";
+            const userPhoto = document.getElementById("userPhoto");
                 const userPhotoLarge = document.getElementById("userPhotoLarge");
                 const userName = document.getElementById("userName");
                 const userEmail = document.getElementById("userEmail");
@@ -1726,13 +1726,13 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (userName) userName.textContent = user.displayName;
                 if (userEmail) userEmail.textContent = user.email;
             }
-        } else {
-            if (profileContainer) {
-                profileContainer.style.display = "none";
-            }
+    } else {
+        if (profileContainer) {
+            profileContainer.style.display = "none";
         }
-    });
-
+    }
+});
+    
     // ---------------- Dropdown ----------------
     if (profileContainer && profileDropdown) {
         profileContainer.addEventListener("click", () => {
