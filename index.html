@@ -1657,8 +1657,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// ---------------- Google Provider Setup ----------------
 const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
+
+// Check if this device has completed a login before
+const hasLoggedInBefore = localStorage.getItem("hasLoggedInBefore");
+
+if (!hasLoggedInBefore) {
+    // 1st time: Force Google to show the account chooser
+    provider.setCustomParameters({ prompt: 'select_account' });
+} else {
+    // 2nd time onwards: Do NOT set select_account so Google auto-selects their active account
+    provider.setCustomParameters({});
+}
 
 const db = getFirestore(app);
 let currentUser = null;
@@ -1671,13 +1682,15 @@ window.addEventListener("DOMContentLoaded", () => {
     if (googleBtn) {
         googleBtn.addEventListener("click", async () => {
             try {
-                // Set the flag right before the popup opens
                 sessionStorage.setItem("justLoggedIn", "true");
 
                 const result = await signInWithPopup(auth, provider);
                 currentUser = result.user;
 
-                // Save user to Firestore
+                // Mark that they successfully logged in at least once
+                localStorage.setItem("hasLoggedInBefore", "true");
+
+                // Save user details to Firestore
                 await setDoc(
                     doc(db, "Users", result.user.uid),
                     {
@@ -1694,7 +1707,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 closeLoginModal();
 
             } catch (error) {
-                // If login fails or is cancelled, clear the flag
                 sessionStorage.removeItem("justLoggedIn");
                 if (error.code === "auth/popup-closed-by-user") {
                     return;
@@ -1705,7 +1717,7 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---------------- User Profile & Conditional Redirect ----------------
+    // ---------------- User Profile & Redirect ----------------
     const profileContainer = document.getElementById("profileContainer");
     const profileDropdown = document.getElementById("profileDropdown");
 
@@ -1715,10 +1727,9 @@ window.addEventListener("DOMContentLoaded", () => {
         if (user) {
             closeLoginModal();
 
-            // Check if they JUST logged in
             if (sessionStorage.getItem("justLoggedIn") === "true") {
-                sessionStorage.removeItem("justLoggedIn"); // Clear flag
-                window.location.replace("book now.html"); // Redirect instantly
+                sessionStorage.removeItem("justLoggedIn");
+                window.location.replace("book now.html");
             }
 
             if (profileContainer) {
@@ -1756,7 +1767,6 @@ window.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             await signOut(auth);
             
-            // Show the logout alert (No alerts on login!)
             alert("You have successfully logged out.");
             location.reload();
         });
