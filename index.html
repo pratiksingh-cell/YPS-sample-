@@ -785,9 +785,9 @@ nav{
         <a href="gallery.html">Gallery</a>
         <a href="contact us.html">Contact Us</a>
 
-        <button class="btn-book" onclick="openLoginModal()">
-            Book Now
-        </button>
+        <button class="btn-book" id="bookNowBtn">
+    Book Now
+</button>
 
         <!-- User Profile -->
         <div class="profile-container" id="profileContainer" style="display:none;">
@@ -1651,6 +1651,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+    let currentUser = null;
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -1689,6 +1690,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const profileDropdown = document.getElementById("profileDropdown");
 
     onAuthStateChanged(auth, (user) => {
+        currentUser = user;
 
         if (!profileContainer) return;
 
@@ -1748,6 +1750,27 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+    const bookNowBtn = document.getElementById("bookNowBtn");
+
+if (bookNowBtn) {
+
+    bookNowBtn.addEventListener("click", () => {
+
+        if (currentUser) {
+
+            // Already logged in
+            window.location.href = "book now.html";
+
+        } else {
+
+            // Not logged in
+            openLoginModal();
+
+        }
+
+    });
+
+}
 </script>
 
     <div id="loginModal" class="login-modal">
