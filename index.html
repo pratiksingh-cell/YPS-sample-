@@ -1529,25 +1529,12 @@ style="color:#9ca3af; text-decoration:none;">
 
 </footer>
 
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
-    authDomain: "yps-resort-sample.firebaseapp.com",
-    projectId: "yps-resort-sample",
-    storageBucket: "yps-resort-sample.firebasestorage.app",
-    messagingSenderId: "102739599449",
-    appId: "1:102739599449:web:96ddb83d95282cd8ec1148",
-    measurementId: "G-ZYL0XVPZ30"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-        
+    const app = initializeApp(firebaseConfig);
 </script>
-
+    
     <!-- Login Popup -->
 <div id="loginModal" class="login-modal">
     <div class="login-box">
@@ -1556,9 +1543,9 @@ style="color:#9ca3af; text-decoration:none;">
         <h2>Welcome to YPS Resort</h2>
         <p>Please sign in to continue your booking.</p>
 
-        <button class="google-btn">
-            Continue with Google
-        </button>
+        <button class="google-btn" id="googleSignIn">
+    Continue with Google
+</button>
 
         <button class="guest-btn" onclick="window.location.href='book now.html'">
             Continue as Guest
