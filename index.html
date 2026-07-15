@@ -1656,7 +1656,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
 const provider = new GoogleAuthProvider();
+// FIX 1: Forces Google to ask which account you want to use every time
+provider.setCustomParameters({ prompt: 'select_account' });
+
 const db = getFirestore(app);
 let currentUser = null;
 
@@ -1684,6 +1688,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     { merge: true }
                 );
 
+                // Close the modal immediately upon successful authentication
                 closeLoginModal();
                 window.location.href = "book now.html";
 
@@ -1697,30 +1702,33 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---------------- User Profile ----------------
+    // ---------------- User Profile & State Management ----------------
     const profileContainer = document.getElementById("profileContainer");
     const profileDropdown = document.getElementById("profileDropdown");
 
     onAuthStateChanged(auth, (user) => {
         currentUser = user;
 
-        if (!profileContainer) return;
-
         if (user) {
-            profileContainer.style.display = "block";
+            // If they are logged in, make sure the login modal stays closed
+            closeLoginModal();
 
-            const userPhoto = document.getElementById("userPhoto");
-            const userPhotoLarge = document.getElementById("userPhotoLarge");
-            const userName = document.getElementById("userName");
-            const userEmail = document.getElementById("userEmail");
+            if (profileContainer) {
+                profileContainer.style.display = "block";
+                const userPhoto = document.getElementById("userPhoto");
+                const userPhotoLarge = document.getElementById("userPhotoLarge");
+                const userName = document.getElementById("userName");
+                const userEmail = document.getElementById("userEmail");
 
-            if (userPhoto) userPhoto.src = user.photoURL;
-            if (userPhotoLarge) userPhotoLarge.src = user.photoURL;
-            if (userName) userName.textContent = user.displayName;
-            if (userEmail) userEmail.textContent = user.email;
-
+                if (userPhoto) userPhoto.src = user.photoURL;
+                if (userPhotoLarge) userPhotoLarge.src = user.photoURL;
+                if (userName) userName.textContent = user.displayName;
+                if (userEmail) userEmail.textContent = user.email;
+            }
         } else {
-            profileContainer.style.display = "none";
+            if (profileContainer) {
+                profileContainer.style.display = "none";
+            }
         }
     });
 
@@ -1728,9 +1736,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (profileContainer && profileDropdown) {
         profileContainer.addEventListener("click", () => {
             profileDropdown.style.display =
-                profileDropdown.style.display === "block"
-                    ? "none"
-                    : "block";
+                profileDropdown.style.display === "block" ? "none" : "block";
         });
     }
 
@@ -1744,22 +1750,21 @@ window.addEventListener("DOMContentLoaded", () => {
             location.reload();
         });
     }
+
+    // ---------------- Booking Redirect ----------------
+    const bookNowBtn = document.getElementById("bookNowBtn");
+
+    if (bookNowBtn) {
+        bookNowBtn.addEventListener("click", () => {
+            // FIX 2: Check the reactive currentUser variable rather than the un-hydrated auth object
+            if (currentUser) {
+                window.location.href = "book now.html";
+            } else {
+                openLoginModal();
+            }
+        });
+    }
 });
-
-// ---------------- Booking Redirect ----------------
-const bookNowBtn = document.getElementById("bookNowBtn");
-
-if (bookNowBtn) {
-    bookNowBtn.addEventListener("click", () => {
-        const user = auth.currentUser;
-
-        if (user) {
-            window.location.href = "book now.html";
-        } else {
-            openLoginModal();
-        }
-    });
-}
 </script>
 
 <div id="loginModal" class="login-modal">
