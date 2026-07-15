@@ -1667,7 +1667,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
                 await signInWithPopup(auth, provider);
 
-                window.location.href = "book now.html";
+                closeLoginModal();
+window.location.href = "book now.html";
 
             } catch (error) {
 
