@@ -624,6 +624,85 @@ nav{
     nav{
     border-bottom:1px solid rgba(0,0,0,0.05);
 }
+
+    /* Login Popup */
+
+.login-modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.6);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.login-box{
+    background:white;
+    width:380px;
+    max-width:90%;
+    border-radius:12px;
+    padding:35px;
+    text-align:center;
+    position:relative;
+    animation:popup .3s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:translateY(-30px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+}
+
+.login-box h2{
+    color:#002366;
+    font-family:'Playfair Display', serif;
+}
+
+.login-box p{
+    color:#666;
+}
+
+.close-btn{
+    position:absolute;
+    right:18px;
+    top:12px;
+    font-size:30px;
+    cursor:pointer;
+}
+
+.google-btn,
+.guest-btn{
+
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.google-btn{
+    background:#002366;
+    color:white;
+}
+
+.google-btn:hover{
+    background:#d4af37;
+}
+
+.guest-btn{
+    background:#f1f1f1;
+}
 </style>
 </head>
 
@@ -1468,5 +1547,39 @@ style="color:#9ca3af; text-decoration:none;">
   const analytics = getAnalytics(app);
         
 </script>
+
+    <!-- Login Popup -->
+<div id="loginModal" class="login-modal">
+    <div class="login-box">
+        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+
+        <h2>Welcome to YPS Resort</h2>
+        <p>Please sign in to continue your booking.</p>
+
+        <button class="google-btn">
+            Continue with Google
+        </button>
+
+        <button class="guest-btn" onclick="window.location.href='book now.html'">
+            Continue as Guest
+        </button>
+    </div>
+</div>
+    function openLoginModal(){
+    document.getElementById("loginModal").style.display="flex";
+}
+
+function closeLoginModal(){
+    document.getElementById("loginModal").style.display="none";
+}
+
+window.onclick=function(event){
+    const modal=document.getElementById("loginModal");
+
+    if(event.target==modal){
+        modal.style.display="none";
+    }
+}
+    
 </body>
 </html>
