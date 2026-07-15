@@ -1534,7 +1534,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebas
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -1570,12 +1572,29 @@ window.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
 
-            console.error(error);
-            alert(error.message);
+    if (error.code === "auth/popup-closed-by-user") {
+        // User closed the Google popup, so do nothing.
+        return;
+    }
+
+    console.error(error);
+    alert(error.message);
+
+}
 
         }
 
     });
+
+});
+    onAuthStateChanged(auth, (user) => {
+
+    if (user) {
+
+        document.getElementById("bookBtn").innerHTML =
+            "👋 Welcome, " + user.displayName;
+
+    }
 
 });
 </script>
