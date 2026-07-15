@@ -1671,10 +1671,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
             try {
 
-                await signInWithPopup(auth, provider);
+                const result = await signInWithPopup(auth, provider);
 
-                closeLoginModal();
-window.location.href = "book now.html";
+// Save user to Firestore
+await setDoc(
+    doc(db, "Users", result.user.uid),
+    {
+        uid:
 
             } catch (error) {
 
