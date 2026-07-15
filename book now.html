@@ -283,22 +283,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// The Solution for "book now.html":
 onAuthStateChanged(auth, (user) => {
-
-    console.log("User =", user);
-
-    if (!user) {
-
-        alert("NOT LOGGED IN");
-
-        window.location.replace("index.html");
-
+    if (user) {
+        // Quietly let them view the page. NO login alert!
+        console.log("User is authenticated:", user.displayName); 
+        
+        // ... your normal code to show profile photo, name, etc. ...
     } else {
-
-        alert("LOGGED IN: " + user.displayName);
-
+        // If they are NOT logged in (logged out)
+        alert("You are logged out. Redirecting to home page...");
+        window.location.href = "index.html"; // Redirects them back to login
     }
-
 });
     const logoutBtn = document.getElementById("logoutBtn");
 
