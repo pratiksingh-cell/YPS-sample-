@@ -1658,7 +1658,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
-// FIX 1: Forces Google to ask which account you want to use every time
 provider.setCustomParameters({ prompt: 'select_account' });
 
 const db = getFirestore(app);
@@ -1675,6 +1674,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 const result = await signInWithPopup(auth, provider);
                 currentUser = result.user;
 
+                // Save user to Firestore
                 await setDoc(
                     doc(db, "Users", result.user.uid),
                     {
@@ -1688,9 +1688,8 @@ window.addEventListener("DOMContentLoaded", () => {
                     { merge: true }
                 );
 
-                // Close the modal immediately upon successful authentication
+                // Close modal (onAuthStateChanged below will handle the actual redirect)
                 closeLoginModal();
-                window.location.href = "book now.html";
 
             } catch (error) {
                 if (error.code === "auth/popup-closed-by-user") {
@@ -1702,7 +1701,7 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---------------- User Profile & State Management ----------------
+    // ---------------- User Profile & Redirect ----------------
     const profileContainer = document.getElementById("profileContainer");
     const profileDropdown = document.getElementById("profileDropdown");
 
@@ -1710,8 +1709,10 @@ window.addEventListener("DOMContentLoaded", () => {
         currentUser = user;
 
         if (user) {
-            // If they are logged in, make sure the login modal stays closed
             closeLoginModal();
+
+            // REDIRECT: If they just logged in, redirect them to the booking page immediately
+            window.location.href = "book now.html";
 
             if (profileContainer) {
                 profileContainer.style.display = "block";
@@ -1751,12 +1752,11 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---------------- Booking Redirect ----------------
+    // ---------------- Booking Button ----------------
     const bookNowBtn = document.getElementById("bookNowBtn");
 
     if (bookNowBtn) {
         bookNowBtn.addEventListener("click", () => {
-            // FIX 2: Check the reactive currentUser variable rather than the un-hydrated auth object
             if (currentUser) {
                 window.location.href = "book now.html";
             } else {
