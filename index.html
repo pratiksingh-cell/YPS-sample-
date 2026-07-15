@@ -1637,6 +1637,12 @@ import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
@@ -1651,7 +1657,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-    let currentUser = null;
+const db = getFirestore(app);
 
 window.addEventListener("DOMContentLoaded", () => {
 
