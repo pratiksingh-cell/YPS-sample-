@@ -292,7 +292,7 @@ onAuthStateChanged(auth, (user) => {
         // ... your normal code to show profile photo, name, etc. ...
     } else {
         // If they are NOT logged in (logged out)
-        alert("You are logged out. Redirecting to home page...");
+        alert("You are not logged In. Please Log In to continue. Redirecting to home page...");
         window.location.href = "index.html"; // Redirects them back to login
     }
 });
