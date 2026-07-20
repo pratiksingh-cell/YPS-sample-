@@ -721,11 +721,42 @@ nav{
         box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
     }
 }
+    <!-- Check that your HTML looks like this layout -->
+<div id="profileContainer" style="display: none; position: relative; cursor: pointer;">
+  <img id="userPhoto" src="" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%;">
+  
+  <!-- The Dropdown Menu -->
+  <div id="profileDropdown" class="profile-dropdown">
+    <img id="userPhotoLarge" src="" alt="User Avatar Large" style="width: 60px; height: 60px; border-radius: 50%;">
+    <p id="userName"></p>
+    <p id="userEmail"></p>
+    <hr>
+    <a href="#" id="logoutBtn">Log Out</a>
+  </div>
+</div>
+
+    /* Crucial CSS needed for the dropdown toggle to work */
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+  display: none; /* Hidden by default */
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* The JS adds the 'active' class on click, which makes it visible */
+.profile-dropdown.active {
+  display: block !important;
+}
 </style>
 </head>
 
 <body>
-
+    
 <nav>
     <div class="logo-container">
         <img src="image/logo.png" alt="YPS Logo" class="logo-img">
