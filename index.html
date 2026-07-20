@@ -1094,12 +1094,10 @@ setInterval(()=>{
 
 <!-- ================= SYSTEM CORE FIREBASE CAPTURE MECHANICS ================= -->
 <script type="module">
-// 1. Import dynamic web modules straight from Google's official CDN (v12.0.0 matching your setup)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// 2. Your Live Firebase App Settings
 const firebaseConfig = {
     apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
     authDomain: "yps-resort-sample.firebaseapp.com",
@@ -1110,7 +1108,6 @@ const firebaseConfig = {
     measurementId: "G-ZYL0XVPZ30"
 };
 
-// Initialize app variables
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
@@ -1155,16 +1152,25 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModalBtn.addEventListener("click", closeModal);
     loginModalOverlay.addEventListener("click", (e) => { if (e.target === loginModalOverlay) closeModal(); });
 
-    // Handle Form Processing -> Stream straight to cloud database
+    // Handle Form Processing
     customLoginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const nameVal = document.getElementById("inputName").value.trim();
-        const emailVal = document.getElementById("inputEmail").value.trim();
-        const phoneVal = document.getElementById("inputPhone").value.trim();
+        const form = e.target;
+        const nameVal = form.querySelector("#inputName").value.trim();
+        const emailVal = form.querySelector("#inputEmail").value.trim();
+        const phoneVal = form.querySelector("#inputPhone").value.trim();
+
+        if (!nameVal || !emailVal || !phoneVal) {
+            alert("Error: Please make sure all fields are filled out.");
+            return;
+        }
+
+        const submitBtn = form.querySelector(".btn-submit-login");
+        submitBtn.textContent = "Connecting...";
+        submitBtn.disabled = true;
 
         try {
-            // Push lead straight to your cloud database collection for marketing use
             await addDoc(collection(db, "marketing_leads"), {
                 name: nameVal,
                 email: emailVal,
@@ -1172,18 +1178,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 capturedAt: serverTimestamp()
             });
 
-            // Keep user UI verified in the current local session
             localStorage.setItem("ypsUserData", JSON.stringify({ name: nameVal, email: emailVal }));
             
             closeModal();
             checkLoginStatus();
             customLoginForm.reset();
 
-            // Redirect safely back down workflow path
-            window.location.href = "Book now.html";
+            // FIXED: Exact match to your file name, all lowercase!
+            window.location.href = "book now.html"; 
         } catch (error) {
             console.error("Database write failure: ", error);
-            alert("Connection error. Please check your Firestore rules setup and try again.");
+            alert("Connection error. Please check your internet and try again.");
+            submitBtn.textContent = "Secure Login";
+            submitBtn.disabled = false;
         }
     });
 
