@@ -8,7 +8,6 @@
 <title>YPS Resort | Royal Banquets & Events</title>
 
 <style>
-
 :root{
     --royal-blue:#002366;
     --gold:#d4af37;
@@ -90,13 +89,14 @@ nav{
     display: none;
     position: absolute;
     right: 0;
-    top: 100%;
+    top: 50px;
     background: #ffffff;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     z-index: 1000;
     min-width: 220px;
     padding: 15px;
+    border: 1px solid #ccc;
 }
 
 .profile-dropdown.active {
@@ -341,14 +341,6 @@ nav{
     object-fit:cover;
     border-radius:50%;
     box-shadow:0 4px 12px rgba(0,0,0,0.15);
-}
-
-.logo{
-    font-family:'Playfair Display',serif;
-    font-size:28px;
-    font-weight:900;
-    color:var(--royal-blue);
-    letter-spacing:1px;
 }
 
 /* ================= GOLD BOOKING BUTTON ================= */
@@ -720,37 +712,6 @@ nav{
         border-radius: 12px;
         box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
     }
-}
-    <!-- Check that your HTML looks like this layout -->
-<div id="profileContainer" style="display: none; position: relative; cursor: pointer;">
-  <img id="userPhoto" src="" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%;">
-  
-  <!-- The Dropdown Menu -->
-  <div id="profileDropdown" class="profile-dropdown">
-    <img id="userPhotoLarge" src="" alt="User Avatar Large" style="width: 60px; height: 60px; border-radius: 50%;">
-    <p id="userName"></p>
-    <p id="userEmail"></p>
-    <hr>
-    <a href="#" id="logoutBtn">Log Out</a>
-  </div>
-</div>
-
-    /* Crucial CSS needed for the dropdown toggle to work */
-.profile-dropdown {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 15px;
-  display: none; /* Hidden by default */
-  z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* The JS adds the 'active' class on click, which makes it visible */
-.profile-dropdown.active {
-  display: block !important;
 }
 </style>
 </head>
@@ -1131,115 +1092,7 @@ setInterval(()=>{
     <p style="text-align:center; opacity:0.7;">© 2026 Y.P.S. Resort | All Rights Reserved.</p>
 </footer>
 
-<!-- ================= SYSTEM CORE LOGIN & DROPDOWN CONTROLS ================= -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const bookNowBtn = document.getElementById("bookNowBtn");
-    const loginModalOverlay = document.getElementById("loginModalOverlay");
-    const closeModalBtn = document.getElementById("closeModalBtn");
-    const customLoginForm = document.getElementById("customLoginForm");
-    
-    const profileContainer = document.getElementById("profileContainer");
-    const profileDropdown = document.getElementById("profileDropdown");
-    const userNameDisplay = document.getElementById("userName");
-    const userEmailDisplay = document.getElementById("userEmail");
-    const userPhoto = document.getElementById("userPhoto");
-    const userPhotoLarge = document.getElementById("userPhotoLarge");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    // Modal Control Logic
-    function openModal() {
-        loginModalOverlay.classList.add("open");
-    }
-
-    function closeModal() {
-        loginModalOverlay.classList.remove("open");
-    }
-
-    // Checking if user data exists locally from a previous submission
-    function checkLoginStatus() {
-        const localUser = localStorage.getItem("ypsUserData");
-        if (localUser) {
-            const data = JSON.parse(localUser);
-            // Hide "Book Now" main display or keep it while showing user state
-            bookNowBtn.style.display = "none";
-            profileContainer.style.display = "block";
-            
-            // Generate customized dynamic avatar based on the registered name
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=002366&color=fff`;
-            userPhoto.src = avatarUrl;
-            userPhotoLarge.src = avatarUrl;
-            
-            userNameDisplay.textContent = data.name;
-            userEmailDisplay.textContent = data.email;
-        } else {
-            bookNowBtn.style.display = "block";
-            profileContainer.style.display = "none";
-        }
-    }
-
-    // Trigger open modal overlay
-    bookNowBtn.addEventListener("click", () => {
-        openModal();
-    });
-
-    closeModalBtn.addEventListener("click", () => {
-        closeModal();
-    });
-
-    // Close on outside blur tap
-    loginModalOverlay.addEventListener("click", (e) => {
-        if (e.target === loginModalOverlay) closeModal();
-    });
-
-    // Handle Form Processing Local Capture (No External API/Firebase needed)
-    customLoginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        const userData = {
-            name: document.getElementById("inputName").value.trim(),
-            email: document.getElementById("inputEmail").value.trim(),
-            phone: document.getElementById("inputPhone").value.trim()
-        };
-
-        // Cache parameters into browser memory
-        localStorage.setItem("ypsUserData", JSON.stringify(userData));
-        sessionStorage.setItem("justLoggedIn", "true");
-        
-        closeModal();
-        checkLoginStatus();
-        customLoginForm.reset();
-
-        // Redirect safely back down workflow path
-        window.location.href = "Book now.html";
-    });
-
-    // Dropdown Toggles with outside click window dismiss support
-    profileContainer.addEventListener("click", (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle("active");
-    });
-
-    document.addEventListener("click", (e) => {
-        if (!profileContainer.contains(e.target)) {
-            profileDropdown.classList.remove("active");
-        }
-    });
-
-    // Clean Logout Routines
-    logoutBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem("ypsUserData");
-        alert("Logged out successfully.");
-        window.location.reload();
-    });
-
-    // Initial load confirmation run
-    checkLoginStatus();
-});
-</script>
-
-    <!-- ================= SYSTEM CORE FIREBASE CAPTURE MECHANICS ================= -->
+<!-- ================= SYSTEM CORE FIREBASE CAPTURE MECHANICS ================= -->
 <script type="module">
 // 1. Import dynamic web modules straight from Google's official CDN (v12.0.0 matching your setup)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -1326,6 +1179,7 @@ document.addEventListener("DOMContentLoaded", () => {
             checkLoginStatus();
             customLoginForm.reset();
 
+            // Redirect safely back down workflow path
             window.location.href = "Book now.html";
         } catch (error) {
             console.error("Database write failure: ", error);
