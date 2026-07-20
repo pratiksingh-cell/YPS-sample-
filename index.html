@@ -1096,7 +1096,7 @@ setInterval(()=>{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
@@ -1171,12 +1171,15 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = true;
 
         try {
-            await addDoc(collection(db, "marketing_leads"), {
+            // Use the email as the document ID to prevent duplicates
+            const leadDocRef = doc(db, "marketing_leads", emailVal);
+            
+            await setDoc(leadDocRef, {
                 name: nameVal,
                 email: emailVal,
                 phone: phoneVal,
-                capturedAt: serverTimestamp()
-            });
+                lastLoginAt: serverTimestamp()
+            }, { merge: true }); // Merge ensures we don't accidentally overwrite other data if they already exist
 
             localStorage.setItem("ypsUserData", JSON.stringify({ name: nameVal, email: emailVal }));
             
