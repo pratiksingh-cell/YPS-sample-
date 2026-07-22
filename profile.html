@@ -22,9 +22,10 @@
             padding: 0;
             background-color: var(--soft-gray);
             color: var(--text-dark);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        /* --- Navigation --- */
         nav {
             background: var(--white);
             display: flex;
@@ -37,39 +38,13 @@
             z-index: 1000;
         }
 
-        .logo { 
-            font-family: 'Playfair Display', serif; 
-            font-size: 26px; 
-            font-weight: 900; 
-            color: var(--royal-blue); 
-        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; color: var(--royal-blue); }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--royal-blue); font-weight: 700; font-size: 14px; text-transform: uppercase; transition: color 0.3s; cursor: pointer; }
+        .nav-links a.active, .nav-links a:hover { color: var(--gold); }
 
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
+        .page-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
 
-        .nav-links a { 
-            text-decoration: none; 
-            color: var(--royal-blue); 
-            font-weight: 700; 
-            font-size: 14px; 
-            text-transform: uppercase; 
-            transition: color 0.3s;
-        }
-
-        .nav-links a.active, .nav-links a:hover { 
-            color: var(--gold); 
-        }
-
-        /* --- Page Layout --- */
-        .page-container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* --- Profile Header Card --- */
         .profile-card {
             background: var(--white);
             border-radius: 12px;
@@ -97,20 +72,9 @@
             flex-shrink: 0;
         }
 
-        .user-details h2 {
-            margin: 0 0 5px 0;
-            color: var(--royal-blue);
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-        }
+        .user-details h2 { margin: 0 0 5px 0; color: var(--royal-blue); font-family: 'Playfair Display', serif; font-size: 24px; }
+        .user-details p { margin: 3px 0; color: #666; font-size: 14px; }
 
-        .user-details p {
-            margin: 3px 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        /* --- Account Info Section --- */
         .info-card {
             background: var(--white);
             border-radius: 12px;
@@ -134,22 +98,9 @@
             gap: 20px;
         }
 
-        .info-item label {
-            display: block;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #888;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
+        .info-item label { display: block; font-size: 12px; text-transform: uppercase; color: #888; font-weight: 700; margin-bottom: 4px; }
+        .info-item span { font-size: 16px; font-weight: 700; color: var(--text-dark); }
 
-        .info-item span {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        /* --- Danger Zone --- */
         .danger-card {
             background: var(--white);
             border-radius: 12px;
@@ -158,19 +109,8 @@
             border: 1px solid #fadbd8;
         }
 
-        .danger-card h3 {
-            color: var(--danger-red);
-            font-family: 'Playfair Display', serif;
-            margin: 0 0 10px 0;
-            font-size: 20px;
-        }
-
-        .danger-card p {
-            color: #666;
-            font-size: 14px;
-            margin: 0 0 20px 0;
-            line-height: 1.5;
-        }
+        .danger-card h3 { color: var(--danger-red); font-family: 'Playfair Display', serif; margin: 0 0 10px 0; font-size: 20px; }
+        .danger-card p { color: #666; font-size: 14px; margin: 0 0 20px 0; line-height: 1.5; }
 
         .btn-delete-account {
             display: inline-block;
@@ -182,19 +122,14 @@
             font-weight: 700;
             font-size: 14px;
             transition: 0.3s;
+            cursor: pointer;
+            border: none;
         }
+        .btn-delete-account:hover { background: #c0392b; }
 
-        .btn-delete-account:hover {
-            background: #c0392b;
-        }
-
-        /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
             nav { padding: 15px 5%; }
-            .profile-card {
-                flex-direction: column;
-                text-align: center;
-            }
+            .profile-card { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -206,37 +141,35 @@
             <a href="index.html">Home</a>
             <a href="my_bookings.html">My Bookings</a>
             <a href="profile.html" class="active">Profile</a>
-            <a href="#">Sign Out</a>
+            <a id="logoutBtn">Sign Out</a>
         </div>
     </nav>
 
     <div class="page-container">
         
-        <!-- Header Summary -->
         <div class="profile-card">
-            <div class="avatar-circle">JD</div>
+            <div class="avatar-circle" id="userInitials">--</div>
             <div class="user-details">
-                <h2>John Doe</h2>
-                <p>Member since July 2026</p>
+                <h2 id="headerName">Loading...</h2>
+                <p id="headerEmail">Loading...</p>
                 <p style="color: var(--gold); font-weight: 700;">★ Valued Guest</p>
             </div>
         </div>
 
-        <!-- Personal Details -->
         <div class="info-card">
             <h3>Personal Information</h3>
             <div class="info-grid">
                 <div class="info-item">
                     <label>Full Name</label>
-                    <span>John Doe</span>
+                    <span id="infoName">Loading...</span>
                 </div>
                 <div class="info-item">
                     <label>Email Address</label>
-                    <span>johndoe@gmail.com</span>
+                    <span id="infoEmail">Loading...</span>
                 </div>
                 <div class="info-item">
                     <label>Phone Number</label>
-                    <span>+91 98765 43210</span>
+                    <span id="infoPhone">Loading...</span>
                 </div>
                 <div class="info-item">
                     <label>Account Status</label>
@@ -245,14 +178,123 @@
             </div>
         </div>
 
-        <!-- Account Data & Privacy -->
         <div class="danger-card">
             <h3>Privacy & Data Control</h3>
             <p>Request to permanently delete your personal account data, contact records, and booking history from YPS Resort servers.</p>
-            <a href="#" class="btn-delete-account">Request Account & Data Deletion</a>
+            <button class="btn-delete-account" id="deleteAccountBtn">Request Account & Data Deletion</button>
         </div>
 
     </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getFirestore, doc, getDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
+    authDomain: "yps-resort-sample.firebaseapp.com",
+    projectId: "yps-resort-sample",
+    storageBucket: "yps-resort-sample.firebasestorage.app",
+    messagingSenderId: "102739599449",
+    appId: "1:102739599449:web:96ddb83d95282cd8ec1148",
+    measurementId: "G-ZYL0XVPZ30"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Verify User Session
+    const localUserStr = localStorage.getItem("ypsUserData");
+    if (!localUserStr) {
+        alert("Please log in to view your profile.");
+        window.location.replace("index.html");
+        return;
+    }
+
+    const localUser = JSON.parse(localUserStr);
+    document.body.style.opacity = "1";
+
+    // 2. Derive Initials (e.g. John Doe -> JD)
+    const nameParts = (localUser.name || "Guest").trim().split(" ");
+    let initials = nameParts[0].charAt(0).toUpperCase();
+    if (nameParts.length > 1) {
+        initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+    }
+    document.getElementById("userInitials").textContent = initials;
+
+    // Set fallback initial UI
+    document.getElementById("headerName").textContent = localUser.name;
+    document.getElementById("headerEmail").textContent = localUser.email;
+    document.getElementById("infoName").textContent = localUser.name;
+    document.getElementById("infoEmail").textContent = localUser.email;
+    document.getElementById("infoPhone").textContent = "Fetching...";
+
+    // 3. Fetch Phone Number from Firestore (`marketing_leads`)
+    try {
+        const leadRef = doc(db, "marketing_leads", localUser.email);
+        const leadSnap = await getDoc(leadRef);
+
+        if (leadSnap.exists()) {
+            const data = leadSnap.data();
+            document.getElementById("infoPhone").textContent = data.phone || "Not Provided";
+        } else {
+            document.getElementById("infoPhone").textContent = "Not Provided";
+        }
+    } catch (error) {
+        console.error("Error fetching lead profile:", error);
+        document.getElementById("infoPhone").textContent = "Not Provided";
+    }
+
+    // 4. Permanent Account & Data Deletion Handler
+    document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
+        const confirmDelete = confirm(
+            "WARNING: This action cannot be undone.\n\nThis will permanently delete your profile, phone records, and all booking requests from YPS Resort servers.\n\nAre you sure you want to proceed?"
+        );
+
+        if (confirmDelete) {
+            const deleteBtn = document.getElementById("deleteAccountBtn");
+            deleteBtn.textContent = "Deleting Data...";
+            deleteBtn.disabled = true;
+
+            try {
+                // A. Delete document from marketing_leads
+                const leadRef = doc(db, "marketing_leads", localUser.email);
+                await deleteDoc(leadRef);
+
+                // B. Query & Delete all booking requests matching this email
+                const requestsRef = collection(db, "booking_requests");
+                const q = query(requestsRef, where("userEmail", "==", localUser.email));
+                const querySnapshot = await getDocs(q);
+
+                const deletePromises = [];
+                querySnapshot.forEach((docSnap) => {
+                    deletePromises.push(deleteDoc(doc(db, "booking_requests", docSnap.id)));
+                });
+                await Promise.all(deletePromises);
+
+                // C. Clear Local Storage and redirect to home
+                localStorage.removeItem("ypsUserData");
+                alert("Your account and all associated data have been permanently deleted.");
+                window.location.replace("index.html");
+
+            } catch (error) {
+                console.error("Error deleting data:", error);
+                alert("An error occurred while deleting your account. Please try again or contact support.");
+                deleteBtn.textContent = "Request Account & Data Deletion";
+                deleteBtn.disabled = false;
+            }
+        }
+    });
+
+    // 5. Sign Out Handler
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("ypsUserData");
+        window.location.replace("index.html");
+    });
+});
+</script>
 
 </body>
 </html>
