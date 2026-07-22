@@ -411,12 +411,13 @@ if (checkBtn) {
         checkBtn.style.pointerEvents = "none";
 
         try {
-            // Query Firestore database for booked dates
-            const bookingsRef = collection(db, "bookings");
-            const q = query(bookingsRef, where("eventDate", "==", eventDate), where("status", "==", "confirmed"));
+            // Query booking_requests directly for confirmed bookings
+            const requestsRef = collection(db, "booking_requests");
+            const q = query(requestsRef, where("eventDate", "==", eventDate), where("status", "==", "confirmed"));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
+                // If a request on this date is already set to "confirmed"
                 alert(`Sorry! ${eventDate} is already booked for a confirmed event. Please pick another date.`);
             } else {
                 const confirmRequest = confirm(
