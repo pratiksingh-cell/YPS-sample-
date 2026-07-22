@@ -763,11 +763,13 @@ nav{
             </div>
             <div class="form-group">
                 <label for="inputEmail">Email Address</label>
-                <input type="email" id="inputEmail" required placeholder="name@example.com">
+                <!-- Updated placeholder to show Gmail is required -->
+                <input type="email" id="inputEmail" required placeholder="example@gmail.com">
             </div>
             <div class="form-group">
                 <label for="inputPhone">Phone Number</label>
-                <input type="tel" id="inputPhone" required placeholder="Enter phone number">
+                <!-- Added maxlength and oninput to instantly block letters -->
+                <input type="tel" id="inputPhone" required placeholder="10-digit phone number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
             <button type="submit" class="btn-submit-login">Login securely</button>
         </form>
@@ -1191,7 +1193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModalBtn.addEventListener("click", closeModal);
     loginModalOverlay.addEventListener("click", (e) => { if (e.target === loginModalOverlay) closeModal(); });
 
-    // Handle Form Processing
+    // Handle Form Processing with Validations
     customLoginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
@@ -1205,12 +1207,25 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // 1. Validate Gmail
+        const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
+        if (!gmailRegex.test(emailVal)) {
+            alert("Please enter a valid Gmail address (must end with @gmail.com).");
+            return;
+        }
+
+        // 2. Validate Phone Number (Exactly 10 digits)
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phoneVal)) {
+            alert("Please enter exactly 10 digits for the phone number (no letters).");
+            return;
+        }
+
         const submitBtn = form.querySelector(".btn-submit-login");
         submitBtn.textContent = "Connecting...";
         submitBtn.disabled = true;
 
         try {
-            // Use the email as the document ID to prevent duplicates
             const leadDocRef = doc(db, "marketing_leads", emailVal);
             
             await setDoc(leadDocRef, {
@@ -1218,7 +1233,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 email: emailVal,
                 phone: phoneVal,
                 lastLoginAt: serverTimestamp()
-            }, { merge: true }); // Merge ensures we don't accidentally overwrite other data if they already exist
+            }, { merge: true });
 
             localStorage.setItem("ypsUserData", JSON.stringify({ name: nameVal, email: emailVal }));
             
@@ -1226,7 +1241,6 @@ document.addEventListener("DOMContentLoaded", () => {
             checkLoginStatus();
             customLoginForm.reset();
 
-            // FIXED: Exact match to your file name, all lowercase!
             window.location.href = "book now.html"; 
         } catch (error) {
             console.error("Database write failure: ", error);
