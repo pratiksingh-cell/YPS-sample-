@@ -208,6 +208,7 @@
                 <option>Seminar</option>
                 <option>Workshop</option>
                 <option>Concert</option>
+                <option>Others</option>
             </select>
         </div>
         <div class="input-group">
@@ -218,10 +219,10 @@
             <label>Guests </label>
             <input type="number" id="guest" min="1" max="5000">
         </div>
-        <button class="btn-book" onclick="alert('Availability checked!')">
-         Check Availability
+        <button class="btn-book" id="checkAvailabilityBtn">
+    Check Availability
         </button>
-    </div>
+ </div>
 
     <footer>
         <div class="logo" style="color:white">YPS RESORT</div>
@@ -236,8 +237,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebas
 import {
     getAuth,
     onAuthStateChanged,
-    signOut // <-- Added missing import
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
@@ -251,39 +261,93 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Strict Security Check
+// 1. Strict Security Check
 onAuthStateChanged(auth, (user) => {
-    // We check BOTH Firebase Auth and your custom LocalStorage token to ensure they aren't kicked out unfairly
     const localUser = localStorage.getItem("ypsUserData");
-
     if (user || localUser) {
-        // User is logged in. Reveal the page by setting opacity to 1.
         document.body.style.opacity = "1";
     } else {
-        // User is NOT logged in.
         alert("Access Denied: You must be logged in to view this page.");
-        // window.location.replace completely removes this page from the browser history
         window.location.replace("index.html"); 
     }
 });
 
-// Logout System
+// 2. Sign Out Logic
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
     logoutBtn.addEventListener("click", async (e) => {
         e.preventDefault();
         try {
-            // Sign out of Firebase
             await signOut(auth);
-            
-            // Wipe local storage tokens
             localStorage.removeItem("ypsUserData");
-            
-            // Redirect using replace so they cannot click 'back'
             window.location.replace("index.html");
         } catch (error) {
             console.error("Logout Error:", error);
+        }
+    });
+}
+
+// 3. Automated Check Availability & Booking System
+const checkBtn = document.getElementById("checkAvailabilityBtn");
+
+if (checkBtn) {
+    checkBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const eventType = document.querySelector(".booking-bar select").value;
+        const eventDate = document.querySelector(".booking-bar input[type='date']").value;
+        const guestCount = document.querySelector("#guest").value;
+
+        // Validation
+        if (!eventDate || !guestCount) {
+            alert("Please select an event date and enter the estimated guest count.");
+            return;
+        }
+
+        checkBtn.textContent = "Checking Database...";
+        checkBtn.style.pointerEvents = "none";
+
+        try {
+            // Check if date is already in confirmed bookings collection
+            const bookingsRef = collection(db, "bookings");
+            const q = query(bookingsRef, where("eventDate", "==", eventDate), where("status", "==", "confirmed"));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                // DATE IS ALREADY BOOKED
+                alert(`Sorry! ${eventDate} is already booked for a confirmed event. Please pick another date.`);
+            } else {
+                // DATE IS AVAILABLE
+                const confirmRequest = confirm(
+                    `Great news! ${eventDate} is available for booking.\n\n` +
+                    `Would you like to submit a booking request for your ${eventType}?`
+                );
+
+                if (confirmRequest) {
+                    const localUser = JSON.parse(localStorage.getItem("ypsUserData") || "{}");
+
+                    // Save the lead request to Firestore for owner notification
+                    await addDoc(collection(db, "booking_requests"), {
+                        userName: localUser.name || "Guest",
+                        userEmail: localUser.email || "Not Provided",
+                        eventType: eventType,
+                        eventDate: eventDate,
+                        guests: guestCount,
+                        status: "pending",
+                        createdAt: serverTimestamp()
+                    });
+
+                    alert("Success! Your booking request has been sent to YPS Resort. We will contact you shortly.");
+                }
+            }
+        } catch (error) {
+            console.error("Error checking availability:", error);
+            alert("Error checking availability. Please try again.");
+        } finally {
+            checkBtn.textContent = "Check Availability";
+            checkBtn.style.pointerEvents = "auto";
         }
     });
 }
