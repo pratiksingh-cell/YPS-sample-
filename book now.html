@@ -26,7 +26,7 @@
             background-color: var(--white);
             color: var(--text-dark);
             scroll-behavior: smooth;
-            /* Hide the body content initially until authentication is verified */
+            /* Hide body content initially until authentication is verified */
             opacity: 0; 
             transition: opacity 0.3s ease;
         }
@@ -99,7 +99,7 @@
             margin-top: 10px;
         }
 
-        /* --- The Vertical Booking Bar (Fixed Structure) --- */
+        /* --- The Vertical Booking Bar --- */
         .booking-bar {
             background: var(--white);
             width: 85%;
@@ -170,18 +170,14 @@
             margin: 20px auto;
         }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .booking-bar { grid-template-columns: 1fr; margin-top: -20px; width: 90%; }
-        }
-        /* --- Professional Success Animation --- */
+        /* --- Professional Green Tick Animation Overlay --- */
         .success-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -201,7 +197,7 @@
             padding: 40px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transform: scale(0.8);
             transition: transform 0.3s ease;
         }
@@ -222,7 +218,7 @@
             border-radius: 50%;
             display: block;
             stroke-width: 4;
-            stroke: #4CAF50; /* Professional Green */
+            stroke: #4CAF50;
             stroke-miterlimit: 10;
             box-shadow: inset 0px 0px 0px #4CAF50;
             animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
@@ -262,6 +258,11 @@
             font-size: 14px;
             font-family: 'Lato', sans-serif;
         }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .booking-bar { grid-template-columns: 1fr; margin-top: -20px; width: 90%; }
+        }
     </style>
 </head>
 <body>
@@ -282,7 +283,7 @@
     <div class="booking-bar">
         <div class="input-group">
             <label>Select Event</label>
-            <select>
+            <select id="eventTypeSelect">
                 <option>Wedding Ceremony</option>
                 <option>Upnayan Sanskar</option>
                 <option>Engagement Ceremony</option>
@@ -296,21 +297,20 @@
                 <option>Seminar</option>
                 <option>Workshop</option>
                 <option>Concert</option>
-                <option>Others</option>
             </select>
         </div>
         <div class="input-group">
             <label>Event Date</label>
-            <input type="date">
+            <input type="date" id="eventDatePicker">
         </div>
         <div class="input-group">
             <label>Guests </label>
             <input type="number" id="guest" min="1" max="5000">
         </div>
         <button class="btn-book" id="checkAvailabilityBtn">
-    Check Availability
+            Check Availability
         </button>
- </div>
+    </div>
 
     <footer>
         <div class="logo" style="color:white">YPS RESORT</div>
@@ -320,7 +320,7 @@
         <p style="font-size: 12px; opacity: 0.7;">&copy; 2026 YPS Resort. All Rights Reserved.</p>
     </footer>
 
-    <!-- Hidden Success Animation Modal -->
+    <!-- Hidden Green Tick Success Overlay -->
     <div id="successOverlay" class="success-overlay">
         <div class="success-modal">
             <div class="check-container">
@@ -365,7 +365,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 1. Strict Security Check
+// 1. Authentication Security Verification
 onAuthStateChanged(auth, (user) => {
     const localUser = localStorage.getItem("ypsUserData");
     if (user || localUser) {
@@ -376,7 +376,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// 2. Sign Out Logic
+// 2. Sign Out Handler
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
     logoutBtn.addEventListener("click", async (e) => {
@@ -391,37 +391,34 @@ if (logoutBtn) {
     });
 }
 
-// 3. Automated Check Availability & Booking System
+// 3. Availability Check & Request Handler
 const checkBtn = document.getElementById("checkAvailabilityBtn");
 
 if (checkBtn) {
     checkBtn.addEventListener("click", async (e) => {
         e.preventDefault();
 
-        const eventType = document.querySelector(".booking-bar select").value;
-        const eventDate = document.querySelector(".booking-bar input[type='date']").value;
-        const guestCount = document.querySelector("#guest").value;
+        const eventType = document.getElementById("eventTypeSelect").value;
+        const eventDate = document.getElementById("eventDatePicker").value;
+        const guestCount = document.getElementById("guest").value;
 
-        // Validation
         if (!eventDate || !guestCount) {
             alert("Please select an event date and enter the estimated guest count.");
             return;
         }
 
-        checkBtn.textContent = "Checking Database...";
+        checkBtn.textContent = "Checking Availability...";
         checkBtn.style.pointerEvents = "none";
 
         try {
-            // Check if date is already in confirmed bookings collection
+            // Query Firestore database for booked dates
             const bookingsRef = collection(db, "bookings");
             const q = query(bookingsRef, where("eventDate", "==", eventDate), where("status", "==", "confirmed"));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                // DATE IS ALREADY BOOKED
                 alert(`Sorry! ${eventDate} is already booked for a confirmed event. Please pick another date.`);
             } else {
-                // DATE IS AVAILABLE
                 const confirmRequest = confirm(
                     `Great news! ${eventDate} is available for booking.\n\n` +
                     `Would you like to submit a booking request for your ${eventType}?`
@@ -430,7 +427,6 @@ if (checkBtn) {
                 if (confirmRequest) {
                     const localUser = JSON.parse(localStorage.getItem("ypsUserData") || "{}");
 
-                    // Save the lead request to Firestore for owner notification
                     await addDoc(collection(db, "booking_requests"), {
                         userName: localUser.name || "Guest",
                         userEmail: localUser.email || "Not Provided",
@@ -441,24 +437,27 @@ if (checkBtn) {
                         createdAt: serverTimestamp()
                     });
 
-                    // Trigger the professional green checkmark animation
+                    // Trigger Green Tick Animation
                     const successOverlay = document.getElementById("successOverlay");
                     successOverlay.classList.add("active");
 
-                    // Wait 2.5 seconds for the animation to play, then redirect
+                    // Redirect to home after 2.5 seconds
                     setTimeout(() => {
                         window.location.href = "index.html";
                     }, 2500);
-                    
-                    return; // Stop the code here so the button doesn't reset while redirecting
+
+                    return;
                 }
             }
         } catch (error) {
             console.error("Error checking availability:", error);
             alert("Error checking availability. Please try again.");
+        } finally {
             checkBtn.textContent = "Check Availability";
             checkBtn.style.pointerEvents = "auto";
         }
+    });
+}
 </script>
 
 </body>
