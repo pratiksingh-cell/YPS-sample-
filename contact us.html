@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="image/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YPS Resort | Contact Us</title>
     
@@ -223,15 +224,8 @@
         <a href="index.html" class="logo">YPS Resort</a>
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="book.html">Book Now</a>
+            <a href="book now.html">Book Now</a>
             <a href="contact.html" style="color: var(--accent-gold);">Contact</a>
-            
-            <!-- Dynamic Auth Links -->
-            <a href="login.html" id="nav-login">Login</a>
-            <a href="my_bookings.html" id="nav-bookings" class="auth-hidden">My Bookings</a>
-            <a href="profile.html" id="nav-profile" class="auth-hidden">Profile</a>
-            <a href="#" id="nav-logout" class="auth-hidden">Logout</a>
-        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -291,76 +285,103 @@
         <p>&copy; 2026 YPS Resort. All Rights Reserved.</p>
     </footer>
 
-    <!-- Firebase Integration (v12) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+<!-- Firebase Integration (Debug Version) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-        // TODO: Replace with your actual Firebase config
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+    // ⚠️ PASTE YOUR ACTUAL FIREBASE CONFIG HERE
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Navbar state handling
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById("nav-login")?.classList.add("auth-hidden");
+            document.getElementById("nav-bookings")?.classList.remove("auth-hidden");
+            document.getElementById("nav-profile")?.classList.remove("auth-hidden");
+            document.getElementById("nav-logout")?.classList.remove("auth-hidden");
+            
+            const emailInput = document.getElementById("contactEmail");
+            if (emailInput && !emailInput.value) emailInput.value = user.email;
+        } else {
+            document.getElementById("nav-login")?.classList.remove("auth-hidden");
+            document.getElementById("nav-bookings")?.classList.add("auth-hidden");
+            document.getElementById("nav-profile")?.classList.add("auth-hidden");
+            document.getElementById("nav-logout")?.classList.add("auth-hidden");
+        }
+    });
+
+    // Logout
+    document.getElementById("nav-logout")?.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = "index.html";
+    });
+
+    // Debugged Contact Form Handler
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("submitBtn");
+        btn.innerText = "Sending...";
+        btn.disabled = true;
+
+        console.log("👉 Step 1: Form submitted");
+
+        // Safety Check 1: Did you forget to paste real keys?
+        if (firebaseConfig.apiKey === "YOUR_API_KEY" || firebaseConfig.projectId === "YOUR_PROJECT_ID") {
+            alert("❌ Setup Error: You haven't replaced the placeholder keys in 'firebaseConfig' with your actual Firebase credentials!");
+            btn.innerText = "Send Message";
+            btn.disabled = false;
+            return;
+        }
+
+        const formData = {
+            name: document.getElementById("contactName").value,
+            email: document.getElementById("contactEmail").value,
+            message: document.getElementById("contactMessage").value,
+            timestamp: serverTimestamp()
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        console.log("👉 Step 2: Collected form data:", formData);
 
-        // 1. Manage Navbar state based on login status
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById("nav-login").classList.add("auth-hidden");
-                document.getElementById("nav-bookings").classList.remove("auth-hidden");
-                document.getElementById("nav-profile").classList.remove("auth-hidden");
-                document.getElementById("nav-logout").classList.remove("auth-hidden");
-                
-                // Auto-fill form email if logged in
-                document.getElementById("contactEmail").value = user.email;
-            } else {
-                document.getElementById("nav-login").classList.remove("auth-hidden");
-                document.getElementById("nav-bookings").classList.add("auth-hidden");
-                document.getElementById("nav-profile").classList.add("auth-hidden");
-                document.getElementById("nav-logout").classList.add("auth-hidden");
-            }
-        });
+        try {
+            console.log("👉 Step 3: Attempting to connect to Firestore...");
 
-        // 2. Handle Logout
-        document.getElementById("nav-logout").addEventListener("click", async (e) => {
-            e.preventDefault();
-            await signOut(auth);
-            window.location.href = "index.html";
-        });
+            // Safety Check 2: 8-second timeout so it never hangs forever
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Timeout: Database did not respond in 8 seconds. Check your Firestore Security Rules or check if the database was created.")), 8000)
+            );
 
-        // 3. Handle Contact Form Submission
-        document.getElementById("contactForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("submitBtn");
-            btn.innerText = "Sending...";
-            btn.disabled = true;
+            // Race the database write against the 8-second timer
+            await Promise.race([
+                addDoc(collection(db, "contact_messages"), formData),
+                timeout
+            ]);
 
-            try {
-                await addDoc(collection(db, "contact_messages"), {
-                    name: document.getElementById("contactName").value,
-                    email: document.getElementById("contactEmail").value,
-                    message: document.getElementById("contactMessage").value,
-                    timestamp: serverTimestamp()
-                });
-                
-                alert("Thank you! Your message has been sent successfully.");
-                document.getElementById("contactForm").reset();
-            } catch (error) {
-                console.error("Error sending message:", error);
-                alert("Failed to send message. Please try again.");
-            } finally {
-                btn.innerText = "Send Message";
-                btn.disabled = false;
-            }
-        });
-    </script>
+            console.log("👉 Step 4: Success!");
+            alert("Thank you! Your message has been sent successfully.");
+            document.getElementById("contactForm").reset();
+
+        } catch (error) {
+            console.error("❌ Firebase Error:", error);
+            alert(error.message);
+        } finally {
+            btn.innerText = "Send Message";
+            btn.disabled = false;
+        }
+    });
+</script>
 </body>
 </html>
