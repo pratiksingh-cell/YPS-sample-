@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | YPS Resort</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --royal-blue: #002366;
+            --gold: #d4af37;
+            --white: #ffffff;
+            --soft-gray: #f4f7f9;
+            --text-dark: #1a1a1a;
+            --danger-red: #e74c3c;
+            --success-green: #2ecc71;
+            --pending-orange: #f39c12;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--soft-gray);
+            color: var(--text-dark);
+        }
+
+        /* Top Header */
+        header {
+            background: var(--royal-blue);
+            color: var(--white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .badge-admin {
+            background: var(--gold);
+            color: var(--royal-blue);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: var(--white);
+            border: 1px solid var(--gold);
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: var(--gold);
+            color: var(--royal-blue);
+        }
+
+        /* Hidden Utility Class */
+        .hidden { display: none !important; }
+
+        /* ================= LOGIN CARD ================= */
+        .login-wrapper {
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--royal-blue);
+        }
+
+        .login-card h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--royal-blue);
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--royal-blue);
+            color: var(--white);
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #001845;
+        }
+
+        .forgot-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: var(--royal-blue);
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* ================= DASHBOARD LAYOUT ================= */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-left: 4px solid var(--royal-blue);
+        }
+
+        .stat-card h4 {
+            margin: 0;
+            color: #777;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--royal-blue);
+        }
+
+        /* Navigation Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--royal-blue);
+            border-bottom-color: var(--gold);
+        }
+
+        /* Data Tables & Cards */
+        .panel-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .panel-card h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--royal-blue);
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        th {
+            background-color: var(--soft-gray);
+            color: var(--royal-blue);
+            font-weight: 700;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-pending { background: #fff4e5; color: var(--pending-orange); }
+        .badge-confirmed { background: #e8f8f5; color: var(--success-green); }
+        .badge-cancelled { background: #fdeaea; color: var(--danger-red); }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-confirm { background: var(--success-green); color: white; }
+        .btn-cancel { background: var(--danger-red); color: white; }
+        .btn-delete { background: #888; color: white; }
+
+        /* Block Date Inline Form */
+        .block-date-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 25px;
+            background: var(--soft-gray);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .block-date-form .form-group {
+            margin-bottom: 0;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <span class="logo">YPS RESORT</span>
+            <span class="badge-admin">Admin Partner Portal</span>
+        </div>
+        <button id="logoutBtn" class="btn-logout hidden">Logout</button>
+    </header>
+
+    <!-- ================= 1. LOGIN SCREEN ================= -->
+    <div id="loginView" class="login-wrapper">
+        <div class="login-card">
+            <h2>Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="adminEmail" placeholder="admin@ypsresort.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary" id="loginBtn">Access Dashboard</button>
+            </form>
+            <span class="forgot-link" id="forgotPasswordBtn">Forgot password or request access?</span>
+        </div>
+    </div>
+
+    <!-- ================= 2. DASHBOARD SCREEN ================= -->
+    <div id="dashboardView" class="dashboard-container hidden">
+        
+        <!-- Quick Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>Total Bookings</h4>
+                <p id="statTotalBookings">0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Pending Requests</h4>
+                <p id="statPendingBookings" style="color: var(--pending-orange);">0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Blocked Dates</h4>
+                <p id="statBlockedDates" style="color: var(--danger-red);">0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Customer Messages</h4>
+                <p id="statTotalMessages">0</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('bookingsTab')">Event Bookings</button>
+            <button class="tab-btn" onclick="switchTab('datesTab')">Pre-Book / Block Dates</button>
+            <button class="tab-btn" onclick="switchTab('messagesTab')">Customer Messages</button>
+        </div>
+
+        <!-- TAB 1: BOOKING MANAGEMENT -->
+        <div id="bookingsTab" class="panel-card tab-content">
+            <h3>Manage Booking Requests</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Guest Email</th>
+                            <th>Event Type</th>
+                            <th>Event Date</th>
+                            <th>Guests</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <tr><td colspan="6" style="text-align:center;">Loading bookings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: PRE-BOOK / BLOCK DATES -->
+        <div id="datesTab" class="panel-card tab-content hidden">
+            <h3>Mark Particular Days as Pre-Booked / Unavailable</h3>
+            
+            <form id="blockDateForm" class="block-date-form">
+                <div class="form-group">
+                    <label>Select Date</label>
+                    <input type="date" id="blockDateInput" required>
+                </div>
+                <div class="form-group">
+                    <label>Reason / Note</label>
+                    <input type="text" id="blockReasonInput" placeholder="e.g. Private Resort Maintenance or VIP Booking" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: auto; padding: 12px 24px;">Mark Pre-Booked</button>
+            </form>
+
+            <h4>Currently Blocked / Pre-Booked Dates</h4>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Blocked Date</th>
+                            <th>Reason / Note</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blockedDatesTableBody">
+                        <tr><td colspan="3" style="text-align:center;">Loading blocked dates...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: CUSTOMER MESSAGES -->
+        <div id="messagesTab" class="panel-card tab-content hidden">
+            <h3>Customer Contact Inquiries</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Message</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messagesTableBody">
+                        <tr><td colspan="4" style="text-align:center;">Loading messages...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+<!-- ================= FIREBASE LOGIC ================= -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { 
+        getAuth, 
+        signInWithEmailAndPassword, 
+        sendPasswordResetEmail, 
+        onAuthStateChanged, 
+        signOut 
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { 
+        getFirestore, 
+        collection, 
+        getDocs, 
+        doc, 
+        updateDoc, 
+        addDoc, 
+        deleteDoc, 
+        serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+     const firebaseConfig = {
+    apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
+    authDomain: "yps-resort-sample.firebaseapp.com",
+    projectId: "yps-resort-sample",
+    storageBucket: "yps-resort-sample.firebasestorage.app",
+    messagingSenderId: "102739599449",
+    appId: "1:102739599449:web:96ddb83d95282cd8ec1148",
+    measurementId: "G-ZYL0XVPZ30"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // 1. Auth Listener
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            document.getElementById("loginView").classList.add("hidden");
+            document.getElementById("dashboardView").classList.remove("hidden");
+            document.getElementById("logoutBtn").classList.remove("hidden");
+            
+            // Load All Dashboard Data
+            await loadBookings();
+            await loadBlockedDates();
+            await loadMessages();
+        } else {
+            document.getElementById("loginView").classList.remove("hidden");
+            document.getElementById("dashboardView").classList.add("hidden");
+            document.getElementById("logoutBtn").classList.add("hidden");
+        }
+    });
+
+    // 2. Admin Login
+    document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("adminEmail").value;
+        const password = document.getElementById("adminPassword").value;
+        const loginBtn = document.getElementById("loginBtn");
+
+        try {
+            loginBtn.innerText = "Authenticating...";
+            loginBtn.disabled = true;
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            alert("Login Failed: " + error.message);
+        } finally {
+            loginBtn.innerText = "Access Dashboard";
+            loginBtn.disabled = false;
+        }
+    });
+
+    // 3. Forgot / Reset Password Handler
+    document.getElementById("forgotPasswordBtn").addEventListener("click", async () => {
+        const email = prompt("Enter your Admin Email address to receive a password reset link:");
+        if (email) {
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("A password reset email has been sent to " + email + ". Please check your inbox!");
+            } catch (error) {
+                alert("Error sending reset email: " + error.message);
+            }
+        }
+    });
+
+    // 4. Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
+
+    // ================= DATA MANAGERS =================
+
+    // A. Load and Update Bookings
+    async function loadBookings() {
+        const tbody = document.getElementById("bookingsTableBody");
+        tbody.innerHTML = "";
+
+        try {
+            const querySnapshot = await getDocs(collection(db, "booking_requests"));
+            let total = 0, pending = 0;
+
+            querySnapshot.forEach((documentSnap) => {
+                total++;
+                const data = documentSnap.data();
+                const docId = documentSnap.id;
+                if (data.status === "pending") pending++;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${data.userEmail || 'N/A'}</strong></td>
+                        <td>${data.eventType || 'N/A'}</td>
+                        <td>${data.eventDate || 'N/A'}</td>
+                        <td>${data.guests || '1'}</td>
+                        <td><span class="badge badge-${data.status}">${data.status}</span></td>
+                        <td>
+                            <button class="btn-action btn-confirm" onclick="updateBookingStatus('${docId}', 'confirmed')">Approve</button>
+                            <button class="btn-action btn-cancel" onclick="updateBookingStatus('${docId}', 'cancelled')">Cancel</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("statTotalBookings").innerText = total;
+            document.getElementById("statPendingBookings").innerText = pending;
+
+            if (total === 0) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No bookings found.</td></tr>`;
+        } catch (error) {
+            console.error(error);
+            tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center;">Failed to load bookings.</td></tr>`;
+        }
+    }
+
+    window.updateBookingStatus = async (docId, newStatus) => {
+        if (confirm(`Change booking status to ${newStatus.toUpperCase()}?`)) {
+            try {
+                await updateDoc(doc(db, "booking_requests", docId), { status: newStatus });
+                await loadBookings();
+            } catch (error) {
+                alert("Error updating status: " + error.message);
+            }
+        }
+    };
+
+    // B. Block / Pre-Book Dates
+    async function loadBlockedDates() {
+        const tbody = document.getElementById("blockedDatesTableBody");
+        tbody.innerHTML = "";
+
+        try {
+            const querySnapshot = await getDocs(collection(db, "blocked_dates"));
+            let count = 0;
+
+            querySnapshot.forEach((documentSnap) => {
+                count++;
+                const data = documentSnap.data();
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${data.date}</strong></td>
+                        <td>${data.reason}</td>
+                        <td>
+                            <button class="btn-action btn-delete" onclick="unblockDate('${documentSnap.id}')">Unblock / Remove</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("statBlockedDates").innerText = count;
+            if (count === 0) tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No blocked dates set.</td></tr>`;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    document.getElementById("blockDateForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const date = document.getElementById("blockDateInput").value;
+        const reason = document.getElementById("blockReasonInput").value;
+
+        try {
+            await addDoc(collection(db, "blocked_dates"), {
+                date: date,
+                reason: reason,
+                createdAt: serverTimestamp()
+            });
+            alert("Date marked as pre-booked successfully.");
+            document.getElementById("blockDateForm").reset();
+            await loadBlockedDates();
+        } catch (error) {
+            alert("Error blocking date: " + error.message);
+        }
+    });
+
+    window.unblockDate = async (docId) => {
+        if (confirm("Are you sure you want to unblock this date?")) {
+            try {
+                await deleteDoc(doc(db, "blocked_dates", docId));
+                await loadBlockedDates();
+            } catch (error) {
+                alert("Error removing block: " + error.message);
+            }
+        }
+    };
+
+    // C. Customer Messages
+    async function loadMessages() {
+        const tbody = document.getElementById("messagesTableBody");
+        tbody.innerHTML = "";
+
+        try {
+            const querySnapshot = await getDocs(collection(db, "contact_messages"));
+            let count = 0;
+
+            querySnapshot.forEach((documentSnap) => {
+                count++;
+                const data = documentSnap.data();
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${data.name || 'N/A'}</strong></td>
+                        <td>${data.email || 'N/A'}</td>
+                        <td>${data.message || ''}</td>
+                        <td>
+                            <button class="btn-action btn-delete" onclick="deleteMessage('${documentSnap.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("statTotalMessages").innerText = count;
+            if (count === 0) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No messages found.</td></tr>`;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    window.deleteMessage = async (docId) => {
+        if (confirm("Delete this contact message?")) {
+            try {
+                await deleteDoc(doc(db, "contact_messages", docId));
+                await loadMessages();
+            } catch (error) {
+                alert("Error deleting message: " + error.message);
+            }
+        }
+    };
+
+    // Tab Switching Function
+    window.switchTab = (tabId) => {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.remove('hidden');
+        event.target.classList.add('active');
+    };
+</script>
+
+</body>
+</html>
