@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPS Resort | Contact Us</title>
+    
+    <!-- Google Fonts for Premium Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        :root {
+            --primary-blue: #002366; /* Royal Blue */
+            --accent-gold: #d4af37;  /* Premium Gold */
+            --light-bg: #f4f7f9;
+            --text-dark: #333333;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
+
+        /* ================= NAVBAR ================= */
+        nav {
+            background-color: var(--primary-blue);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .auth-hidden {
+            display: none;
+        }
+
+        /* ================= HERO SECTION ================= */
+        .hero {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            border-bottom: 5px solid var(--accent-gold);
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            color: var(--accent-gold);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* ================= CONTACT SECTION ================= */
+        .contact-section {
+            padding: 60px 5%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        /* Left Column: Info & Form */
+        .contact-left {
+            flex: 1;
+            min-width: 320px;
+        }
+
+        .contact-details {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+
+        .contact-details h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-blue);
+            margin-top: 0;
+            font-size: 2rem;
+        }
+
+        .contact-details p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .contact-form h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-blue);
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Lato', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+
+        .contact-form textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .contact-form button {
+            background: var(--primary-blue);
+            color: white;
+            border: 2px solid var(--primary-blue);
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .contact-form button:hover {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-blue);
+        }
+
+        /* Right Column: Map */
+        .map-container {
+            flex: 1.2;
+            min-width: 350px;
+            height: 100%;
+            min-height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,35,102,0.15);
+            border: 8px solid white;
+            transition: transform 0.3s ease;
+        }
+
+        .map-container:hover {
+            transform: scale(1.02);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            border: 0;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Standard YPS Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo">YPS Resort</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="book.html">Book Now</a>
+            <a href="contact.html" style="color: var(--accent-gold);">Contact</a>
+            
+            <!-- Dynamic Auth Links -->
+            <a href="login.html" id="nav-login">Login</a>
+            <a href="my_bookings.html" id="nav-bookings" class="auth-hidden">My Bookings</a>
+            <a href="profile.html" id="nav-profile" class="auth-hidden">Profile</a>
+            <a href="#" id="nav-logout" class="auth-hidden">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Get in Touch</h1>
+        <p>We are here to assist you with your perfect stay.</p>
+    </div>
+
+    <!-- Main Contact Layout -->
+    <div class="contact-section">
+        <div class="contact-container">
+            
+            <!-- Left Side: Info & Form -->
+            <div class="contact-left">
+                
+                <div class="contact-details">
+                    <h2>Contact Information</h2>
+                    <p>📍 Muzaffarpur, Bihar, India</p>
+                    <p>📞 +91 98765XXXXX</p>
+                    <p>✉️ yps@gmail.com</p>
+                    <p>🕒 Mon - Sun : 9 AM - 8 PM</p>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <form id="contactForm">
+                        <label>Full Name</label>
+                        <input type="text" id="contactName" placeholder="name" required>
+                        
+                        <label>Email Address</label>
+                        <input type="email" id="contactEmail" placeholder="name@example.com" required>
+                        
+                        <label>Message</label>
+                        <textarea id="contactMessage" placeholder="How can we help you?" required></textarea>
+                        
+                        <button type="submit" id="submitBtn">Send Message</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Right Side: Map -->
+            <div class="map-container">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d345.81959939566474!2d85.37627568252347!3d26.099104810897252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sin!4v1773988801449!5m2!1sen!2sin"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Standard YPS Footer -->
+    <footer>
+        <p>&copy; 2026 YPS Resort. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Firebase Integration (v12) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+        // TODO: Replace with your actual Firebase config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // 1. Manage Navbar state based on login status
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById("nav-login").classList.add("auth-hidden");
+                document.getElementById("nav-bookings").classList.remove("auth-hidden");
+                document.getElementById("nav-profile").classList.remove("auth-hidden");
+                document.getElementById("nav-logout").classList.remove("auth-hidden");
+                
+                // Auto-fill form email if logged in
+                document.getElementById("contactEmail").value = user.email;
+            } else {
+                document.getElementById("nav-login").classList.remove("auth-hidden");
+                document.getElementById("nav-bookings").classList.add("auth-hidden");
+                document.getElementById("nav-profile").classList.add("auth-hidden");
+                document.getElementById("nav-logout").classList.add("auth-hidden");
+            }
+        });
+
+        // 2. Handle Logout
+        document.getElementById("nav-logout").addEventListener("click", async (e) => {
+            e.preventDefault();
+            await signOut(auth);
+            window.location.href = "index.html";
+        });
+
+        // 3. Handle Contact Form Submission
+        document.getElementById("contactForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("submitBtn");
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "contact_messages"), {
+                    name: document.getElementById("contactName").value,
+                    email: document.getElementById("contactEmail").value,
+                    message: document.getElementById("contactMessage").value,
+                    timestamp: serverTimestamp()
+                });
+                
+                alert("Thank you! Your message has been sent successfully.");
+                document.getElementById("contactForm").reset();
+            } catch (error) {
+                console.error("Error sending message:", error);
+                alert("Failed to send message. Please try again.");
+            } finally {
+                btn.innerText = "Send Message";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
