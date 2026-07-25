@@ -189,6 +189,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -202,97 +203,127 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Verify User Session
-    const localUserStr = localStorage.getItem("ypsUserData");
-    if (!localUserStr) {
-        alert("Please log in to view your profile.");
-        window.location.replace("index.html");
-        return;
-    }
-
-    const localUser = JSON.parse(localUserStr);
-    document.body.style.opacity = "1";
-
-    // 2. Derive Initials (e.g. John Doe -> JD)
-    const nameParts = (localUser.name || "Guest").trim().split(" ");
-    let initials = nameParts[0].charAt(0).toUpperCase();
-    if (nameParts.length > 1) {
-        initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
-    }
-    document.getElementById("userInitials").textContent = initials;
-
-    // Set fallback initial UI
-    document.getElementById("headerName").textContent = localUser.name;
-    document.getElementById("headerEmail").textContent = localUser.email;
-    document.getElementById("infoName").textContent = localUser.name;
-    document.getElementById("infoEmail").textContent = localUser.email;
-    document.getElementById("infoPhone").textContent = "Fetching...";
-
-    // 3. Fetch Phone Number from Firestore (`marketing_leads`)
-    try {
-        const leadRef = doc(db, "marketing_leads", localUser.email);
-        const leadSnap = await getDoc(leadRef);
-
-        if (leadSnap.exists()) {
-            const data = leadSnap.data();
-            document.getElementById("infoPhone").textContent = data.phone || "Not Provided";
-        } else {
-            document.getElementById("infoPhone").textContent = "Not Provided";
-        }
-    } catch (error) {
-        console.error("Error fetching lead profile:", error);
-        document.getElementById("infoPhone").textContent = "Not Provided";
-    }
-
-    // 4. Permanent Account & Data Deletion Handler
-    document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
-        const confirmDelete = confirm(
-            "WARNING: This action cannot be undone.\n\nThis will permanently delete your profile, phone records, and all booking requests from YPS Resort servers.\n\nAre you sure you want to proceed?"
-        );
-
-        if (confirmDelete) {
-            const deleteBtn = document.getElementById("deleteAccountBtn");
-            deleteBtn.textContent = "Deleting Data...";
-            deleteBtn.disabled = true;
-
-            try {
-                // A. Delete document from marketing_leads
-                const leadRef = doc(db, "marketing_leads", localUser.email);
-                await deleteDoc(leadRef);
-
-                // B. Query & Delete all booking requests matching this email
-                const requestsRef = collection(db, "booking_requests");
-                const q = query(requestsRef, where("userEmail", "==", localUser.email));
-                const querySnapshot = await getDocs(q);
-
-                const deletePromises = [];
-                querySnapshot.forEach((docSnap) => {
-                    deletePromises.push(deleteDoc(doc(db, "booking_requests", docSnap.id)));
-                });
-                await Promise.all(deletePromises);
-
-                // C. Clear Local Storage and redirect to home
-                localStorage.removeItem("ypsUserData");
-                alert("Your account and all associated data have been permanently deleted.");
-                window.location.replace("index.html");
-
-            } catch (error) {
-                console.error("Error deleting data:", error);
-                alert("An error occurred while deleting your account. Please try again or contact support.");
-                deleteBtn.textContent = "Request Account & Data Deletion";
-                deleteBtn.disabled = false;
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // 1. Verify User Session with Firebase Auth
+    onAuthStateChanged(auth, async (user) => {
+        const localUserStr = localStorage.getItem("ypsUserData");
+        
+        if (user || localUserStr) {
+            document.body.style.opacity = "1";
+            const localUser = JSON.parse(localUserStr || "{}");
+            
+            // 2. Derive Initials (e.g. John Doe -> JD)
+            const nameParts = (localUser.name || "Guest").trim().split(" ");
+            let initials = nameParts[0].charAt(0).toUpperCase();
+            if (nameParts.length > 1) {
+                initials += nameParts[nameParts.length - 1].charAt(0).toUpperCase();
             }
+            document.getElementById("userInitials").textContent = initials;
+
+            // Set fallback initial UI
+            document.getElementById("headerName").textContent = localUser.name || "Guest";
+            document.getElementById("headerEmail").textContent = localUser.email || "";
+            document.getElementById("infoName").textContent = localUser.name || "Guest";
+            document.getElementById("infoEmail").textContent = localUser.email || "";
+            document.getElementById("infoPhone").textContent = "Fetching...";
+
+            // 3. Fetch Phone Number from Firestore
+            try {
+                if (localUser.email) {
+                    const leadRef = doc(db, "marketing_leads", localUser.email);
+                    const leadSnap = await getDoc(leadRef);
+
+                    if (leadSnap.exists()) {
+                        const data = leadSnap.data();
+                        document.getElementById("infoPhone").textContent = data.phone || "Not Provided";
+                    } else {
+                        document.getElementById("infoPhone").textContent = "Not Provided";
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching lead profile:", error);
+                document.getElementById("infoPhone").textContent = "Not Provided";
+            }
+            
+            setupDeleteHandler(user, localUser.email);
+            
+        } else {
+            alert("Access Denied: You must be logged in to view your profile.");
+            window.location.replace("index.html"); 
         }
     });
 
-    // 5. Sign Out Handler
-    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+    // 4. Permanent Account & Data Deletion Handler
+    function setupDeleteHandler(authUser, userEmail) {
+        document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
+            if (!userEmail) return;
+            
+            const confirmDelete = confirm(
+                "WARNING: This action cannot be undone.\n\nThis will permanently delete your profile, phone records, and all booking requests from YPS Resort servers.\n\nAre you sure you want to proceed?"
+            );
+
+            if (confirmDelete) {
+                const deleteBtn = document.getElementById("deleteAccountBtn");
+                deleteBtn.textContent = "Deleting Data...";
+                deleteBtn.disabled = true;
+
+                try {
+                    // A. Delete document from marketing_leads
+                    const leadRef = doc(db, "marketing_leads", userEmail);
+                    await deleteDoc(leadRef);
+
+                    // B. Query & Delete all booking requests matching this email
+                    const requestsRef = collection(db, "booking_requests");
+                    const q = query(requestsRef, where("userEmail", "==", userEmail));
+                    const querySnapshot = await getDocs(q);
+
+                    const deletePromises = [];
+                    querySnapshot.forEach((docSnap) => {
+                        deletePromises.push(deleteDoc(doc(db, "booking_requests", docSnap.id)));
+                    });
+                    await Promise.all(deletePromises);
+                    
+                    // C. Delete the actual Firebase Authentication User
+                    if (authUser) {
+                        await deleteUser(authUser);
+                    }
+
+                    // D. Clear Local Storage and redirect to home
+                    localStorage.removeItem("ypsUserData");
+                    alert("Your account and all associated data have been permanently deleted.");
+                    window.location.replace("index.html");
+
+                } catch (error) {
+                    console.error("Error deleting data:", error);
+                    
+                    // Firebase security catch: Requires recent login to delete an account
+                    if (error.code === 'auth/requires-recent-login') {
+                        alert("For security reasons, please sign out and sign back in before deleting your account.");
+                    } else {
+                        alert("An error occurred while deleting your account. Ensure you are fully logged in and try again.");
+                    }
+                    
+                    deleteBtn.textContent = "Request Account & Data Deletion";
+                    deleteBtn.disabled = false;
+                }
+            }
+        });
+    }
+
+    // 5. Properly Handle Firebase Sign Out
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
         e.preventDefault();
-        localStorage.removeItem("ypsUserData");
-        window.location.replace("index.html");
+        try {
+            await signOut(auth);
+            localStorage.removeItem("ypsUserData");
+            window.location.replace("index.html");
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
     });
 });
 </script>
