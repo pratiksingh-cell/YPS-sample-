@@ -215,6 +215,48 @@
             padding: 20px;
             margin-top: 40px;
         }
+        @media (max-width: 768px) {
+    /* Stack the Logo on top, and the links row on the bottom */
+    nav {
+        flex-direction: column; 
+        padding: 15px 5%;
+        gap: 15px;
+    }
+
+    /* Force links side-by-side */
+    .nav-links {
+        display: flex;
+        flex-direction: row; /* This keeps them horizontal */
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+        overflow-x: auto; /* Allows horizontal scrolling if the phone is very narrow */
+        white-space: nowrap; /* Prevents text from breaking into two lines */
+        padding-bottom: 5px; /* Adds space so the scrollbar doesn't overlap text */
+    }
+
+    /* Shrink the text slightly to help it fit */
+    .nav-links a {
+        font-size: 13px; 
+        padding: 5px 0;
+    }
+
+    /* Make the booking button compact */
+    .btn-book {
+        width: auto; 
+        padding: 8px 15px;
+        font-size: 12px;
+        margin: 0;
+    }
+
+    /* If you added the hamburger menu icon here, hide it */
+    .menu-toggle {
+        display: none !important;
+    }
+    
+    /* Keep the rest of your mobile CSS below this... */
+}
     </style>
 </head>
 <body>
