@@ -43,18 +43,20 @@ a {
     transition: color 0.3s ease;
 }
 
-/* ================= NAVIGATION ================= */
+/* ================= NAVIGATION (Transparent & Golden Theme) ================= */
 nav {
-    background: var(--white);
+    background: transparent;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 6%;
-    position: sticky;
+    padding: 20px 6%;
+    position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
     transition: 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: none;
 }
     
 .logo-container {
@@ -69,15 +71,17 @@ nav {
     object-fit: cover;
     border-radius: 50%;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 2px solid var(--gold);
 }
 
 .logo {
     font-family: 'Playfair Display', serif;
     font-size: 24px;
     font-weight: 900;
-    color: var(--royal-blue);
+    color: var(--gold);
     letter-spacing: 1px;
     text-transform: uppercase;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
 }
 
 .nav-links {
@@ -87,16 +91,16 @@ nav {
 }
 
 .nav-links a {
-    color: var(--royal-blue);
+    color: var(--gold);
     font-weight: 700;
     font-size: 14px;
     text-transform: uppercase;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
 }
 
 .nav-links a:hover {
-    color: var(--gold);
+    color: var(--white);
 }
-
 /* ================= PROFILE MENU ================= */
 .profile-container {
     position: relative;
