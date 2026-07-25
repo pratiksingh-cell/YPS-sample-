@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -133,6 +133,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -146,22 +147,29 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Verify User Session
-    const localUserStr = localStorage.getItem("ypsUserData");
-    if (!localUserStr) {
-        alert("Please log in to view your bookings.");
-        window.location.replace("index.html");
-        return;
-    }
-
-    const localUser = JSON.parse(localUserStr);
-    document.body.style.opacity = "1";
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // 1. Verify User Session With Firebase Auth
+    onAuthStateChanged(auth, async (user) => {
+        const localUserStr = localStorage.getItem("ypsUserData");
+        
+        if (user || localUserStr) {
+            document.body.style.opacity = "1";
+            const localUser = JSON.parse(localUserStr || "{}");
+            await fetchUserBookings(localUser.email);
+        } else {
+            alert("Access Denied: You must be logged in to view this page.");
+            window.location.replace("index.html"); 
+        }
+    });
 
     // 2. Fetch and Render Bookings
-    async function fetchUserBookings() {
+    async function fetchUserBookings(userEmail) {
+        if (!userEmail) return;
+
         const activeContainer = document.getElementById("activeBookingsContainer");
         const pastContainer = document.getElementById("pastBookingsContainer");
         
@@ -170,7 +178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
             const requestsRef = collection(db, "booking_requests");
-            const q = query(requestsRef, where("userEmail", "==", localUser.email));
+            const q = query(requestsRef, where("userEmail", "==", userEmail));
             const querySnapshot = await getDocs(q);
 
             let activeCount = 0;
@@ -229,8 +237,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    await fetchUserBookings();
-
     // 3. Cancel Booking Request Handler
     document.getElementById("activeBookingsContainer").addEventListener("click", async (e) => {
         if (e.target.classList.contains("btn-cancel-req")) {
@@ -244,10 +250,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const bookingRef = doc(db, "booking_requests", docId);
                     await updateDoc(bookingRef, { status: "cancelled" });
                     alert("Your booking request has been cancelled.");
-                    await fetchUserBookings();
+                    
+                    const localUserStr = localStorage.getItem("ypsUserData");
+                    const localUser = JSON.parse(localUserStr || "{}");
+                    await fetchUserBookings(localUser.email);
                 } catch (error) {
                     console.error("Cancellation error:", error);
-                    alert("Error cancelling request. Please try again.");
+                    alert("Error cancelling request. Ensure you are fully logged in and try again.");
                     e.target.textContent = "Cancel Request";
                     e.target.style.pointerEvents = "auto";
                 }
@@ -255,11 +264,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 4. Sign Out Handler
-    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+    // 4. Properly Handle Firebase Sign Out
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
         e.preventDefault();
-        localStorage.removeItem("ypsUserData");
-        window.location.replace("index.html");
+        try {
+            await signOut(auth);
+            localStorage.removeItem("ypsUserData");
+            window.location.replace("index.html");
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
     });
 });
 </script>
