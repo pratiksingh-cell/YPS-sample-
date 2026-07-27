@@ -46,14 +46,13 @@
 
         /* ================= NAVBAR ================= */
         nav {
-            background-color: rgba(10, 25, 47, 0.4); /* Increased transparency */
+            background-color: rgba(10, 25, 47, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 16px 8%;
             display: flex;
-            justify-content: flex-start; /* Aligns items next to each other */
+            justify-content: space-between;
             align-items: center;
-            gap: 40px; /* Space between logo and links */
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -86,7 +85,7 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 32px;
+            gap: 28px;
         }
 
         .nav-links a {
@@ -135,8 +134,8 @@
             text-align: center;
             padding: 90px 20px;
             overflow: hidden;
-            margin-top: -80px; /* Pulls hero under the transparent nav slightly */
-            padding-top: 150px; /* Adjusts padding to account for the nav overlap */
+            margin-top: -80px;
+            padding-top: 150px;
         }
 
         .hero::before {
@@ -349,8 +348,9 @@
 
             .nav-links {
                 width: 100%;
-                justify-content: center; /* Keeps it centered on mobile */
-                gap: 20px;
+                justify-content: center;
+                gap: 16px;
+                flex-wrap: wrap;
             }
 
             .hero {
@@ -394,6 +394,11 @@
 
         <div class="nav-links">
             <a href="index.html">Home</a>
+            <a href="contact.html">Contact</a>
+            <a href="bookings.html" id="nav-bookings" class="auth-hidden">My Bookings</a>
+            <a href="profile.html" id="nav-profile" class="auth-hidden">Profile</a>
+            <a href="login.html" id="nav-login">Login</a>
+            <a href="#" id="nav-logout" class="auth-hidden">Logout</a>
             <button class="btn-book" id="bookNowBtn">Book Now</button>
         </div>
     </nav>
@@ -475,7 +480,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Navbar state handling
+    // Book Now button navigation
+    document.getElementById("bookNowBtn")?.addEventListener("click", () => {
+        window.location.href = "booking.html";
+    });
+
+    // Navbar authentication state handling
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById("nav-login")?.classList.add("auth-hidden");
