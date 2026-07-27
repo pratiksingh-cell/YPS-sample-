@@ -394,11 +394,6 @@
 
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="contact.html">Contact</a>
-            <a href="bookings.html" id="nav-bookings" class="auth-hidden">My Bookings</a>
-            <a href="profile.html" id="nav-profile" class="auth-hidden">Profile</a>
-            <a href="login.html" id="nav-login">Login</a>
-            <a href="#" id="nav-logout" class="auth-hidden">Logout</a>
             <button class="btn-book" id="bookNowBtn">Book Now</button>
         </div>
     </nav>
@@ -482,7 +477,7 @@
 
     // Book Now button navigation
     document.getElementById("bookNowBtn")?.addEventListener("click", () => {
-        window.location.href = "booking.html";
+        window.location.href = "book_now.html";
     });
 
     // Navbar authentication state handling
