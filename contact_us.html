@@ -46,13 +46,14 @@
 
         /* ================= NAVBAR ================= */
         nav {
-            background-color: rgba(10, 25, 47, 0.95);
+            background-color: rgba(10, 25, 47, 0.4); /* Increased transparency */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 16px 8%;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* Aligns items next to each other */
             align-items: center;
+            gap: 40px; /* Space between logo and links */
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -134,6 +135,8 @@
             text-align: center;
             padding: 90px 20px;
             overflow: hidden;
+            margin-top: -80px; /* Pulls hero under the transparent nav slightly */
+            padding-top: 150px; /* Adjusts padding to account for the nav overlap */
         }
 
         .hero::before {
@@ -346,12 +349,13 @@
 
             .nav-links {
                 width: 100%;
-                justify-content: center;
+                justify-content: center; /* Keeps it centered on mobile */
                 gap: 20px;
             }
 
             .hero {
-                padding: 60px 20px;
+                padding: 120px 20px 60px 20px;
+                margin-top: -95px;
             }
 
             .hero h1 {
@@ -458,7 +462,7 @@
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyDqxBxM2kVUdG11EdYgwh4jfKbjrvbwXkA",
+        apiKey: "AIzaSyDrgQrzg84l36CMDbbjHYDMTcuU4UKbuDw",
         authDomain: "yps-resort-sample.firebaseapp.com",
         projectId: "yps-resort-sample",
         storageBucket: "yps-resort-sample.firebasestorage.app",
