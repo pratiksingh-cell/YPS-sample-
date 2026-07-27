@@ -459,70 +459,87 @@ if (logoutBtn) {
         }
     });
 }
-
+    
 // 3. Availability Check & Request Handler
-// Check if admin has blocked/pre-booked this date
-const blockedRef = collection(db, "blocked_dates");
-const blockedQuery = query(blockedRef, where("date", "==", eventDate));
-const blockedSnapshot = await getDocs(blockedQuery);
+const checkBtn = document.getElementById("checkAvailabilityBtn");
 
-if (!blockedSnapshot.empty) {
-    const blockedData = blockedSnapshot.docs[0].data();
-    alert(`Sorry! ${eventDate} is unavailable.\nReason: ${blockedData.reason}`);
-    return;
-}
+if (checkBtn) {
+    checkBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
 
-// Check for confirmed bookings
-const requestsRef = collection(db, "booking_requests");
-const bookingQuery = query(
-    requestsRef,
-    where("eventDate", "==", eventDate),
-    where("status", "==", "confirmed")
-);
+        const eventType = document.getElementById("eventTypeSelect").value;
+        const eventDate = document.getElementById("eventDatePicker").value;
+        const guestCount = document.getElementById("guest").value;
 
-const bookingSnapshot = await getDocs(bookingQuery);
+        if (!eventDate || !guestCount) {
+            alert("Please select an event date and enter the estimated guest count.");
+            return;
+        }
 
-if (!bookingSnapshot.empty) {
-    alert(`Sorry! ${eventDate} is already booked. Please choose another date.`);
-    return;
-}
+        checkBtn.textContent = "Checking Availability...";
+        checkBtn.style.pointerEvents = "none";
 
-// Date is available
-const confirmRequest = confirm(
-    `Great news! ${eventDate} is available for booking.\n\n` +
-    `Would you like to submit a booking request for your ${eventType}?`
-);
+        try {
+            // Check blocked/pre-booked dates
+            const blockedQuery = query(
+                collection(db, "blocked_dates"),
+                where("date", "==", eventDate)
+            );
 
-if (confirmRequest) {
-    const localUser = JSON.parse(localStorage.getItem("ypsUserData") || "{}");
+            const blockedSnapshot = await getDocs(blockedQuery);
 
-    await addDoc(collection(db, "booking_requests"), {
-        userName: localUser.name || "Guest",
-        userEmail: localUser.email || "Not Provided",
-        eventType: eventType,
-        eventDate: eventDate,
-        guests: guestCount,
-        status: "pending",
-        createdAt: serverTimestamp()
+            if (!blockedSnapshot.empty) {
+                const blockedData = blockedSnapshot.docs[0].data();
+                alert(`Sorry! ${eventDate} is unavailable.\nReason: ${blockedData.reason}`);
+                return;
+            }
+
+            // Check confirmed bookings
+            const bookingQuery = query(
+                collection(db, "booking_requests"),
+                where("eventDate", "==", eventDate),
+                where("status", "==", "confirmed")
+            );
+
+            const bookingSnapshot = await getDocs(bookingQuery);
+
+            if (!bookingSnapshot.empty) {
+                alert(`Sorry! ${eventDate} is already booked. Please choose another date.`);
+                return;
+            }
+
+            const confirmRequest = confirm(
+                `Great news! ${eventDate} is available for booking.\n\nWould you like to submit a booking request for your ${eventType}?`
+            );
+
+            if (!confirmRequest) return;
+
+            const localUser = JSON.parse(localStorage.getItem("ypsUserData") || "{}");
+
+            await addDoc(collection(db, "booking_requests"), {
+                userName: localUser.name || "Guest",
+                userEmail: localUser.email || "Not Provided",
+                eventType,
+                eventDate,
+                guests: guestCount,
+                status: "pending",
+                createdAt: serverTimestamp()
+            });
+
+            document.getElementById("successOverlay").classList.add("active");
+
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 5000);
+
+        } catch (error) {
+            console.error("Error checking availability:", error);
+            alert("Error checking availability. Please try again.");
+        } finally {
+            checkBtn.textContent = "Check Availability";
+            checkBtn.style.pointerEvents = "auto";
+        }
     });
-
-    const successOverlay = document.getElementById("successOverlay");
-    successOverlay.classList.add("active");
-
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 5000);
-
-    return;
-}
-} catch (error) {
-    console.error("Error checking availability:", error);
-    alert("Error checking availability. Please try again.");
-} finally {
-    checkBtn.textContent = "Check Availability";
-    checkBtn.style.pointerEvents = "auto";
-}
-});
 }
 </script>
 
