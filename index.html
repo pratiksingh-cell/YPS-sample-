@@ -36,25 +36,33 @@ img {
     display: block;
 }
 
-/* Global Link Reset to fix the underline issue */
+/* Global Link Reset */
 a {
     text-decoration: none;
     color: inherit;
     transition: color 0.3s ease;
 }
 
-/* ================= NAVIGATION ================= */
+/* ================= NAVIGATION (TRANSPARENT & FIXED) ================= */
 nav {
-    background: var(--white);
+    background: transparent; /* Made transparent */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 6%;
-    position: sticky;
+    padding: 15px 6%;
+    position: fixed; /* Changes from sticky to fixed to scroll along seamlessly */
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
-    transition: 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.4s ease;
+}
+
+/* Scroll class to make text readable when scrolling over white sections */
+nav.scrolled {
+    background: rgba(0, 35, 102, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 10px 6%;
 }
     
 .logo-container {
@@ -75,22 +83,26 @@ nav {
     font-family: 'Playfair Display', serif;
     font-size: 24px;
     font-weight: 900;
-    color: var(--royal-blue);
+    color: var(--white); /* White for dark transparent background */
     letter-spacing: 1px;
     text-transform: uppercase;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .nav-links {
     display: flex;
     align-items: center;
     gap: 25px;
+    margin-left: auto; /* This pushes all the links exactly to the right side */
+    margin-right: 25px; /* Creates spacing before the profile/hamburger icon */
 }
 
 .nav-links a {
-    color: var(--royal-blue);
+    color: var(--white); /* White for dark transparent background */
     font-weight: 700;
     font-size: 14px;
     text-transform: uppercase;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .nav-links a:hover {
@@ -116,7 +128,6 @@ nav {
     transform: scale(1.05);
 }
 
-/* Upgraded Smooth Dropdown Animation */
 .profile-dropdown {
     opacity: 0;
     visibility: hidden;
@@ -712,15 +723,16 @@ nav {
 .menu-toggle {
     display: none;
     font-size: 28px;
-    color: var(--royal-blue);
+    color: var(--white);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     cursor: pointer;
     user-select: none;
 }
 
-/* ================= MOBILE MEDIA QUERIES ================= */
+/* ================= MOBILE MEDIA QUERIES (WIDTH ADJUSTMENTS) ================= */
 @media (max-width: 768px) {
     nav {
-        flex-wrap: wrap;
+        background: rgba(0, 35, 102, 0.95); /* Solid on mobile for better menu readability */
         padding: 15px 5%;
     }
 
@@ -728,28 +740,40 @@ nav {
         display: block;
     }
 
+    /* Absolute position allows menu to pop open over content without ruining page structure */
     .nav-links {
-        width: 100%;
-        order: 3;
+        position: absolute;
+        top: 70px; 
+        left: 5%;
+        width: 90%;
+        margin: 0;
         flex-direction: column;
-        margin-top: 10px;
-        padding: 0;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.4s ease, padding 0.4s ease;
-        background: var(--white);
-        border-radius: 8px;
     }
 
     .nav-links.active {
         max-height: 400px;
         padding: 15px 0;
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
     }
 
-    .nav-links a, .btn-book {
-        width: 90%;
-        margin: 5px auto;
+    .nav-links a {
+        color: var(--royal-blue); /* Returns link color to blue for mobile dropdown */
+        text-shadow: none;
+        width: 100%;
+        padding: 12px 0;
+        margin: 0;
+        text-align: center;
+        display: block;
+    }
+
+    .nav-links .btn-book {
+        width: 85%;
+        margin: 10px auto;
         text-align: center;
         display: block;
     }
@@ -762,7 +786,7 @@ nav {
         width: 220px;
     }
     
-    .logo { font-size: 20px; }
+    .logo { font-size: 20px; text-shadow: none; }
     .logo-img { width: 35px; height: 35px; }
 
     .hero h1 { font-size: 2.8rem; }
@@ -785,7 +809,7 @@ nav {
         <div class="logo">YPS RESORT</div>
     </div>
 
-    <!-- 2. LINKS (Hidden in hamburger menu on mobile) -->
+    <!-- 2. LINKS (Pushed Right via margin-left auto) -->
     <div class="nav-links" id="navLinks">
         <a href="#">Home</a>
         <a href="gallery.html">Gallery</a>
@@ -832,12 +856,10 @@ nav {
             </div>
             <div class="form-group">
                 <label for="inputEmail">Email Address</label>
-                <!-- Updated placeholder to show Gmail is required -->
                 <input type="email" id="inputEmail" required placeholder="example@gmail.com">
             </div>
             <div class="form-group">
                 <label for="inputPhone">Phone Number</label>
-                <!-- Added maxlength and oninput to instantly block letters -->
                 <input type="tel" id="inputPhone" required placeholder="10-digit phone number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
             <button type="submit" class="btn-submit-login">Login securely</button>
@@ -910,91 +932,6 @@ nav {
     </div>
     <button class="premium-btn next">&#10095;</button>
 </div>
-
-<!-- ================= CSS FOR PREMIUM SLIDER ================= -->
-<style>
-.premium-slider{
-    position:relative;
-    width:100%;
-    max-width:1000px;
-    margin:auto;
-    overflow:hidden;
-    padding:30px 0;
-}
-.premium-track{
-    display:flex;
-    transition:transform 0.5s ease;
-}
-.premium-card{
-    min-width:100%;
-    background:white;
-    border-radius:25px;
-    overflow:hidden;
-    box-shadow:0 20px 50px rgba(0,0,0,0.15);
-    position:relative;
-}
-.premium-card img{
-    width:100%;
-    height:500px;
-    object-fit:cover;
-}
-.premium-content{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    padding:40px;
-    background:linear-gradient(transparent, rgba(0,0,0,0.85));
-    color:white;
-}
-.premium-content h3{
-    font-size:42px;
-    margin-bottom:15px;
-    font-family:'Playfair Display',serif;
-}
-.premium-content p{
-    max-width:600px;
-    line-height:1.7;
-    margin-bottom:20px;
-}
-.premium-content a{
-    display:inline-block;
-    padding:12px 24px;
-    background:#d4af37;
-    color:black;
-    border-radius:30px;
-    text-decoration:none;
-    font-weight:bold;
-}
-.premium-btn{
-    position:absolute;
-    top:40%;
-    transform:translateY(-50%);
-    width:40px;
-    height:40px;
-    border:none;
-    border-radius:50%;
-    background:black;
-    color:white;
-    box-shadow:0 5px 20px rgba(0,0,0,0.15);
-    font-size:18px;
-    cursor:pointer;
-    z-index:5;
-    transition:0.3s;
-}
-.premium-btn:hover{
-    transform:translateY(-50%) scale(1.08);
-}
-.prev{ left:20px; }
-.next{ right:20px; }
-
-@media(max-width:768px){
-    .premium-card img{ height:350px; }
-    .premium-content{ padding:25px; }
-    .premium-content h3{ font-size:28px; }
-    .premium-content p{ font-size:14px; }
-    .premium-btn{ width:45px; height:45px; font-size:20px; }
-}
-</style>
 
 <!-- ================= SLIDER SCRIPT ================= -->
 <script>
@@ -1216,7 +1153,17 @@ const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", () => {
-    // --- NEW: Mobile Menu Toggle ---
+    // --- Navbar Scroll JS Added ---
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
+
+    // --- Mobile Menu Toggle ---
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
     const navLinks = document.getElementById("navLinks");
     mobileMenuBtn.addEventListener("click", () => navLinks.classList.toggle("active"));
